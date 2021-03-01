@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">99 Hub</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="app_info">ALL ABOUT FOR ONLINE GAME\nZONE © 2018 99HUB.IN</string>
+    <string name="in_play">In Play</string>
+    <string name="profile">Profile</string>
+    <string name="upcoming_game">Upcoming Game</string>
+    <string name="complete_games">Complete Games</string>
+    <string name="my_ledger">My Ledger</string>
+    <string name="change_password">Change Password</string>
+    <string name="old_games">Old Games List</string>
+    <string name="old_ledger">Old My Ledger</string>
+
+</resources>
