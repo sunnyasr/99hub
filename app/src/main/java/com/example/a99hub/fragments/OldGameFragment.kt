@@ -6,18 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.a99hub.R
-import com.example.a99hub.databinding.FragmentChangePassBinding
+import com.example.a99hub.databinding.FragmentOldGameBinding
 
-class ChangePassFragment : Fragment() {
 
-    private var _binding: FragmentChangePassBinding? = null
+class OldGameFragment : Fragment() {
+    private var _binding: FragmentOldGameBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentChangePassBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentOldGameBinding.inflate(layoutInflater, container, false)
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -28,5 +28,6 @@ class ChangePassFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
+
 
 }

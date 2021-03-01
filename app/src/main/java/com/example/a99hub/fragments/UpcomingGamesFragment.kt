@@ -20,9 +20,14 @@ class UpcomingGamesFragment : Fragment() {
     ): View {
         _binding = FragmentUpcomingGamesBinding.inflate(layoutInflater, container, false)
         binding.btnBack.setOnClickListener {
-            it.findNavController().navigate(R.id.action_upcomingGamesFragment_to_homeFragment)
+            activity?.onBackPressed()
         }
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

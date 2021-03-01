@@ -20,6 +20,21 @@
         <action
             android:id="@+id/action_homeFragment_to_upcomingGamesFragment"
             app:destination="@id/upcomingGamesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_completeGameFragment"
+            app:destination="@id/completeGameFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_ledgerFragment"
+            app:destination="@id/ledgerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_oldGameFragment"
+            app:destination="@id/oldGameFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_oldLedgerFragment"
+            app:destination="@id/oldLedgerFragment" />
     </fragment>
     <fragment
         android:id="@+id/changePassFragment"
@@ -46,6 +61,51 @@
         tools:layout="@layout/fragment_upcoming_games" >
         <action
             android:id="@+id/action_upcomingGamesFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/completeGameFragment"
+        android:name="com.example.a99hub.fragments.CompleteGameFragment"
+        android:label="fragment_complete_game"
+        tools:layout="@layout/fragment_complete_game" >
+        <action
+            android:id="@+id/action_completeGameFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.a99hub.fragments.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ledgerFragment"
+        android:name="com.example.a99hub.fragments.LedgerFragment"
+        android:label="fragment_ledger"
+        tools:layout="@layout/fragment_ledger" >
+        <action
+            android:id="@+id/action_ledgerFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/oldGameFragment"
+        android:name="com.example.a99hub.fragments.OldGameFragment"
+        android:label="fragment_old_game"
+        tools:layout="@layout/fragment_old_game" >
+        <action
+            android:id="@+id/action_oldGameFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/oldLedgerFragment"
+        android:name="com.example.a99hub.fragments.OldLedgerFragment"
+        android:label="fragment_old_ledger"
+        tools:layout="@layout/fragment_old_ledger" >
+        <action
+            android:id="@+id/action_oldLedgerFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
 </navigation>

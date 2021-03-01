@@ -6,18 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.a99hub.R
-import com.example.a99hub.databinding.FragmentChangePassBinding
+import com.example.a99hub.databinding.FragmentCompleteGameBinding
 
-class ChangePassFragment : Fragment() {
 
-    private var _binding: FragmentChangePassBinding? = null
+class CompleteGameFragment : Fragment() {
+    private var _binding: FragmentCompleteGameBinding? = null
     private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentChangePassBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentCompleteGameBinding.inflate(layoutInflater, container, false)
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
