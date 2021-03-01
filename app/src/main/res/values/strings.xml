@@ -14,5 +14,7 @@
     <string name="change_password">Change Password</string>
     <string name="old_games">Old Games List</string>
     <string name="old_ledger">Old My Ledger</string>
+    <string name="logout">Logout</string>
+    <string name="back_to_main_menu">Back To Main Menu</string>
 
 </resources>

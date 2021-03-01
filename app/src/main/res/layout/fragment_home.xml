@@ -16,15 +16,17 @@
         android:weightSum="2">
 
         <LinearLayout
+            android:id="@+id/in_play"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/crick" />
 
             <TextView
@@ -33,20 +35,22 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/in_play"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
 
         <LinearLayout
+            android:id="@+id/upcoming_game"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/all_game" />
 
             <TextView
@@ -55,7 +59,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/upcoming_game"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -75,8 +79,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/cg1" />
 
             <TextView
@@ -85,7 +89,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/complete_games"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
 
         </LinearLayout>
@@ -99,8 +103,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/profile" />
 
             <TextView
@@ -109,7 +113,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/profile"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -129,8 +133,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/cl" />
 
             <TextView
@@ -139,7 +143,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/my_ledger"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
 
         </LinearLayout>
@@ -153,8 +157,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/cp" />
 
             <TextView
@@ -163,7 +167,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/change_password"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -183,8 +187,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/og" />
 
             <TextView
@@ -193,7 +197,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/old_games"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
 
         </LinearLayout>
@@ -207,8 +211,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/ol" />
 
             <TextView
@@ -217,7 +221,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/old_ledger"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
     </LinearLayout>

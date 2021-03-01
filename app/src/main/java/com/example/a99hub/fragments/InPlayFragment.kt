@@ -6,28 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.example.a99hub.R
-import com.example.a99hub.databinding.FragmentLoginBinding
+import com.example.a99hub.databinding.FragmentInPlayBinding
 
 
-class LoginFragment : Fragment() {
-
-    private var _binding: FragmentLoginBinding? = null
+class InPlayFragment : Fragment() {
+    private var _binding: FragmentInPlayBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
-        val navController = activity?.let {
-            Navigation.findNavController(it, R.id.fragment)
-        }
-        binding.btnLogin.setOnClickListener {
-
-            navController?.navigate(R.id.action_loginFragment_to_homeFragment)
+        _binding = FragmentInPlayBinding.inflate(layoutInflater, container, false)
+        binding.btnBack.setOnClickListener {
+            activity?.onBackPressed()
         }
         return binding.root
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
 }
