@@ -28,8 +28,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.btnLogin.setOnClickListener(this)
-
-        Toast.makeText(this, "hi", Toast.LENGTH_LONG).show()
     }
 
     fun getIPAddress(): String {
@@ -39,7 +37,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-
 
         val username = binding.etUsername.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
@@ -58,13 +55,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         response: Response<LoginResponse>
                     ) {
 
-//                        if (response.isSuccessful) {
-                        Toast.makeText(
-                            applicationContext,
-                            "response.code().toString()",
-                            Toast.LENGTH_LONG
-                        ).show()
-//                        }
+                        if (response.isSuccessful && response.code() == 200) {
+                            val user = response.body()
+//                            Toast.makeText(
+//                                applicationContext,
+//                                ,
+//                                Toast.LENGTH_LONG
+//                            ).show()
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+
+                        }
 
                     }
 

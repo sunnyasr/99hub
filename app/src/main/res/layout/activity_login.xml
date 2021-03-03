@@ -45,6 +45,8 @@
             android:padding="10dp">
 
             <EditText
+
+                android:drawablePadding="5dp"
                 android:id="@+id/et_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,6 +55,7 @@
                 android:hint="@string/username" />
 
             <EditText
+                android:drawablePadding="5dp"
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
