@@ -1,25 +1,78 @@
 package com.example.a99hub.activities
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.text.TextUtils
+import android.text.format.Formatter
 import android.view.View
-import com.example.a99hub.R
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.a99hub.databinding.ActivityLoginBinding
+import com.example.a99hub.network.Api
+import net.simplifiedcoding.data.responses.LoginResponse
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+import java.util.*
+
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityLoginBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.btnLogin.setOnClickListener(this)
+
+
+    }
+
+    fun getIPAddress(): String {
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val ipAddress: String = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
+        return ipAddress
     }
 
     override fun onClick(v: View?) {
-        startActivity(Intent(applicationContext, MainActivity::class.java))
+
+
+        val username = binding.etUsername.text.toString().trim()
+        val password = binding.etPassword.text.toString().trim()
+
+
+        if (TextUtils.isEmpty(username))
+            Toast.makeText(applicationContext, "enter username", Toast.LENGTH_LONG).show()
+        if (TextUtils.isEmpty(password))
+            Toast.makeText(applicationContext, "enter password", Toast.LENGTH_LONG).show()
+
+
+        Api().uswrLogin(username, password, getIPAddress())
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+
+                    if (response.isSuccessful) {
+                        Toast.makeText(
+                            applicationContext,
+                            response.body()?.user?.username,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Toast.makeText(applicationContext, t.message, Toast.LENGTH_LONG).show()
+                }
+
+            })
 
     }
 }

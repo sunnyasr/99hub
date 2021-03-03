@@ -16,5 +16,8 @@
     <string name="old_ledger">Old My Ledger</string>
     <string name="logout">Logout</string>
     <string name="back_to_main_menu">Back To Main Menu</string>
+    <string name="old_pass">Old Password</string>
+    <string name="new_pass">New Password</string>
+    <string name="con_pass">Confirm Password</string>
 
 </resources>
