@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(binding.root)
         binding.btnLogin.setOnClickListener(this)
 
-
+        Toast.makeText(this, "hi", Toast.LENGTH_LONG).show()
     }
 
     fun getIPAddress(): String {
@@ -47,32 +47,34 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         if (TextUtils.isEmpty(username))
             Toast.makeText(applicationContext, "enter username", Toast.LENGTH_LONG).show()
-        if (TextUtils.isEmpty(password))
+        else if (TextUtils.isEmpty(password))
             Toast.makeText(applicationContext, "enter password", Toast.LENGTH_LONG).show()
+        else {
 
+            Api().uswrLogin(username, password, getIPAddress())
+                .enqueue(object : Callback<LoginResponse> {
+                    override fun onResponse(
+                        call: Call<LoginResponse>,
+                        response: Response<LoginResponse>
+                    ) {
 
-        Api().uswrLogin(username, password, getIPAddress())
-            .enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
-                ) {
-
-                    if (response.isSuccessful) {
+//                        if (response.isSuccessful) {
                         Toast.makeText(
                             applicationContext,
-                            response.body()?.user?.username,
+                            "response.code().toString()",
                             Toast.LENGTH_LONG
                         ).show()
+//                        }
+
                     }
 
-                }
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        Toast.makeText(applicationContext, "[ERROR]" + t.message, Toast.LENGTH_LONG)
+                            .show()
+                    }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    Toast.makeText(applicationContext, t.message, Toast.LENGTH_LONG).show()
-                }
+                })
 
-            })
-
+        }
     }
 }
