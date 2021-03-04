@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
             navController?.navigate(R.id.action_homeFragment_to_profileFragment)
         }
         binding.myLadger.setOnClickListener {
-            navController?.navigate(R.id.action_homeFragment_to_changePassFragment)
+            navController?.navigate(R.id.action_homeFragment_to_ledgerFragment)
         }
 
         binding.changePassword.setOnClickListener {

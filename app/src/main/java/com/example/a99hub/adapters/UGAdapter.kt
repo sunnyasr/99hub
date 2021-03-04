@@ -1,16 +1,16 @@
 package com.example.a99hub.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a99hub.R
 import com.example.a99hub.model.UGModel
-import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,27 +31,23 @@ class UGAdapter(private val context: Context?, private var arrayList: ArrayList<
         )
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: UGViewHolder, position: Int) {
         val game = arrayList[position]
         holder.team.text = game.getLongName()
-        holder.date.text =  game.getStartTime()
+        holder.date.text = game.getStartTime()
         holder.declared.text = "Declared : No"
 
-        var time: Long = 0
-        var formatter: DateFormat? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            formatter = SimpleDateFormat("MM-dd, HH:mm")
-        }
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                var date: Date? = null
-                date = formatter!!.parse(game.getStartTime())
-                time = date!!.time
-            }
-            holder.date.text=getDate(time)?.getTime().toString()
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val dateFormat = SimpleDateFormat("hh:mm a")
+
+        val time = dateFormat.format(Date()).toString()
+        val date = format.parse(game.getStartTime())
+        holder.date.text = StringBuilder().append(DateFormat.format("MMM", date))
+            .append(" ")
+            .append(DateFormat.format("dd", date))
+            .append(", ")
+            .append(time)
 
 
     }
@@ -62,11 +58,4 @@ class UGAdapter(private val context: Context?, private var arrayList: ArrayList<
         this.arrayList = arrayList
         notifyDataSetChanged()
     }
-
-    private fun getDate(time: Long): Calendar? {
-        val cal = Calendar.getInstance(TimeZone.getDefault())
-        cal.timeInMillis = time
-        return cal
-    }
-
 }

@@ -1,23 +1,25 @@
 package com.example.a99hub.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.databinding.ActivityMainBinding
 import com.example.a99hub.network.Api
+import com.example.a99hub.network.SocketInstance
+import com.github.nkzawa.emitter.Emitter
+import com.github.nkzawa.socketio.client.IO
+import com.github.nkzawa.socketio.client.Socket
 import com.kaopiz.kprogresshud.KProgressHUD
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
-import net.simplifiedcoding.data.responses.LogoutResponse
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +30,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var compositeDisposable: CompositeDisposable
     private var token: String = ""
+
+
+    private var mSocket: Socket? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +53,25 @@ class MainActivity : AppCompatActivity() {
         binding.btnLogout.setOnClickListener {
             logout()
         }
+        //Socket instance
+        val app: SocketInstance = application as SocketInstance
+        mSocket = app.getMSocket()
+        //connecting socket
+        mSocket!!.connect()
+        val options = IO.Options()
+        options.reconnection = true //reconnection
+        options.forceNew = true
+
+        if (mSocket?.connected()!!) {
+            Toast.makeText(this, "Socket is connected", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Socket is not connected", Toast.LENGTH_SHORT).show()
+        }
+
+
+//        mSocket!!.on(Socket.EVENT_CONNECT, Emitter.Listener {
+//            mSocket!!.emit("event_id", "30324990")
+//        });
     }
 
     fun setProgress() {
