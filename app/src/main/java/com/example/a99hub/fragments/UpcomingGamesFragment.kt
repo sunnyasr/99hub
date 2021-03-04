@@ -12,6 +12,7 @@ import com.example.a99hub.adapters.UGAdapter
 import com.example.a99hub.databinding.FragmentUpcomingGamesBinding
 import com.example.a99hub.model.UGModel
 import com.example.a99hub.network.Api
+import com.kaopiz.kprogresshud.KProgressHUD
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
@@ -27,6 +28,7 @@ class UpcomingGamesFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ugAdapter: UGAdapter
     private lateinit var arraList: ArrayList<UGModel>
+    private lateinit var kProgressHUD: KProgressHUD
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,7 @@ class UpcomingGamesFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
+        setProgress()
         arraList = ArrayList()
         ugAdapter = UGAdapter(context, ArrayList<UGModel>())
         recyclerView = binding.recyclerView
@@ -54,6 +57,7 @@ class UpcomingGamesFragment : Fragment() {
     }
 
     fun getData() {
+        kProgressHUD.show()
         Api.invoke().getAllComingGame().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.code() == 200) {
@@ -92,9 +96,9 @@ class UpcomingGamesFragment : Fragment() {
                             arraList.add(ugModel)
 
                     }
+                    kProgressHUD.dismiss()
                     ugAdapter.setData(arraList)
-//                    ugAdapter.notifyDataSetChanged()
-                    Toast.makeText(context, arraList.size.toString(), Toast.LENGTH_LONG).show()
+
                 }
             }
 
@@ -103,6 +107,15 @@ class UpcomingGamesFragment : Fragment() {
             }
 
         })
+    }
+
+    fun setProgress() {
+        kProgressHUD = KProgressHUD(context)
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setLabel("Please wait")
+            .setCancellable(true)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.5f)
     }
 
 

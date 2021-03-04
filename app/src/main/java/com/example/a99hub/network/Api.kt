@@ -4,6 +4,7 @@ import com.example.a99hub.model.UGModel
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.core.Observable
 import net.simplifiedcoding.data.responses.LoginResponse
+import net.simplifiedcoding.data.responses.LogoutResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -18,14 +19,20 @@ interface Api {
 
     @FormUrlEncoded
     @POST("login")
-    fun uswrLogin(
+    fun userLogin(
         @Field("username") username: String,
-        @Field("ap") password: String,
-        @Field("ap") ip: String,
+        @Field("password") password: String,
+        @Field("ip") ip: String,
     ): Call<LoginResponse>
 //
 //    @GET("upcoming/sports")
 //    fun getAllComingGame(): Observable<List<UGModel>>
+
+    @FormUrlEncoded
+    @POST("logout")
+    fun logout(
+        @Field("token") token: String,
+    ): Observable<LogoutResponse>
 
 
     @GET("upcoming/sports")

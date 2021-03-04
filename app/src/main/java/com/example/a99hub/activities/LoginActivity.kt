@@ -9,25 +9,45 @@ import android.text.format.Formatter
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import com.example.a99hub.data.dataStore.LoginManager
+import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.databinding.ActivityLoginBinding
 import com.example.a99hub.network.Api
+import com.kaopiz.kprogresshud.KProgressHUD
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.simplifiedcoding.data.responses.LoginResponse
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 import java.util.*
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var loginManager: LoginManager
+    private lateinit var userManager: UserManager
+    private lateinit var kProgressHUD: KProgressHUD
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loginManager = LoginManager(this)
+        userManager = UserManager(this)
         binding.btnLogin.setOnClickListener(this)
+        setProgress()
+    }
+
+    fun setProgress() {
+        kProgressHUD = KProgressHUD(this)
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setLabel("Please wait")
+            .setCancellable(true)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.5f)
     }
 
     fun getIPAddress(): String {
@@ -37,32 +57,32 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-
         val username = binding.etUsername.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
-
 
         if (TextUtils.isEmpty(username))
             Toast.makeText(applicationContext, "enter username", Toast.LENGTH_LONG).show()
         else if (TextUtils.isEmpty(password))
             Toast.makeText(applicationContext, "enter password", Toast.LENGTH_LONG).show()
         else {
-
-            Api().uswrLogin(username, password, getIPAddress())
+            kProgressHUD.show()
+            Api().userLogin(username, password, getIPAddress())
                 .enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(
                         call: Call<LoginResponse>,
                         response: Response<LoginResponse>
                     ) {
+                        kProgressHUD.dismiss()
+                        if (response.body()?.status!!) {
+                            lifecycleScope.launch {
+                                loginManager.setLogged(true)
+                                userManager.storeUser(response.body()!!)
+                            }
 
-                        if (response.isSuccessful && response.code() == 200) {
-                            val user = response.body()
-//                            Toast.makeText(
-//                                applicationContext,
-//                                ,
-//                                Toast.LENGTH_LONG
-//                            ).show()
-                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            startActivity(intent)
+
 
                         }
 
@@ -77,4 +97,5 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         }
     }
+
 }

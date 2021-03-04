@@ -40,7 +40,7 @@ class UGAdapter(private val context: Context?, private var arrayList: ArrayList<
         var time: Long = 0
         var formatter: DateFormat? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            formatter = SimpleDateFormat("MM-dd, HH:mm")
         }
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -48,7 +48,7 @@ class UGAdapter(private val context: Context?, private var arrayList: ArrayList<
                 date = formatter!!.parse(game.getStartTime())
                 time = date!!.time
             }
-            holder.declared.text=getDate(time)?.getTime().toString()
+            holder.date.text=getDate(time)?.getTime().toString()
         } catch (e: ParseException) {
             e.printStackTrace()
         }
