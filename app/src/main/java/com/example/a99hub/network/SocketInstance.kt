@@ -7,7 +7,7 @@ import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
 import java.net.URISyntaxException
 
-private const val URL = "http://192.168.43.44:5000/"
+private const val URL = "https://index.bluexch.com/"
 
 class SocketInstance : Application() {
     //socket.io connection url

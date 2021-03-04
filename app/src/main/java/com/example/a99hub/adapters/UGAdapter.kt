@@ -36,13 +36,13 @@ class UGAdapter(private val context: Context?, private var arrayList: ArrayList<
         val game = arrayList[position]
         holder.team.text = game.getLongName()
         holder.date.text = game.getStartTime()
-        holder.declared.text = "Declared : No"
+        holder.declared.text = StringBuilder().append( "Declared").append(" : ").append("NO")
 
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val dateFormat = SimpleDateFormat("hh:mm a")
-
-        val time = dateFormat.format(Date()).toString()
         val date = format.parse(game.getStartTime())
+        val time = dateFormat.format(date).toString()
+
         holder.date.text = StringBuilder().append(DateFormat.format("MMM", date))
             .append(" ")
             .append(DateFormat.format("dd", date))
