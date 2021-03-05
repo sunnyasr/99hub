@@ -63,6 +63,11 @@ dependencies {
     //socket
     implementation  'com.github.nkzawa:socket.io-client:0.6.0'
 
+//    implementation ('io.socket:socket.io-client:2.0.0') {
+//        // excluding org.json which is provided by Android
+//        exclude group: 'org.json', module: 'json'
+//    }
+
     //mvvm arch
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 

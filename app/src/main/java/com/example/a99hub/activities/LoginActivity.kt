@@ -77,13 +77,19 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             lifecycleScope.launch {
                                 loginManager.setLogged(true)
                                 userManager.storeUser(response.body()!!)
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
+
                             }
 
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            startActivity(intent)
 
-
+                        } else {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Invalid Username/Password try again",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
 
                     }

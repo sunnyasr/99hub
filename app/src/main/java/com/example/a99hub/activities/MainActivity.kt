@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import com.example.a99hub.data.dataStore.LimitManager
 import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.databinding.ActivityMainBinding
@@ -14,23 +15,32 @@ import com.example.a99hub.network.SocketInstance
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
+//import com.example.a99hub.network.SocketInstance
+//import com.github.nkzawa.emitter.Emitter
+//import com.github.nkzawa.socketio.client.IO
+//import com.github.nkzawa.socketio.client.Socket
 import com.kaopiz.kprogresshud.KProgressHUD
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
+
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.text.StringBuilder
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var loginManager: LoginManager
     private lateinit var userManager: UserManager
+    private lateinit var limitManager: LimitManager
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var compositeDisposable: CompositeDisposable
     private var token: String = ""
 
+
+//    private var mSocket: Socket? = null
 
     private var mSocket: Socket? = null
 
@@ -40,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setProgress()
+        limitManager = LimitManager(this)
         loginManager = LoginManager(this)
         userManager = UserManager(this)
         compositeDisposable = CompositeDisposable()
@@ -48,6 +59,10 @@ class MainActivity : AppCompatActivity() {
         })
         userManager.token.asLiveData().observe(this, {
             token = it
+            getCoin(it)
+        })
+        limitManager.coin.asLiveData().observe(this, {
+            binding.tvCoins.text = StringBuilder().append("Coins : ").append(it.toDouble().toInt())
         })
 
         binding.btnLogout.setOnClickListener {
@@ -56,12 +71,12 @@ class MainActivity : AppCompatActivity() {
         //Socket instance
         val app: SocketInstance = application as SocketInstance
         mSocket = app.getMSocket()
-        //connecting socket
+//        //connecting socket
         mSocket!!.connect()
         val options = IO.Options()
         options.reconnection = true //reconnection
         options.forceNew = true
-
+//
         if (mSocket?.connected()!!) {
             Toast.makeText(this, "Socket is connected", Toast.LENGTH_SHORT).show()
         } else {
@@ -72,6 +87,20 @@ class MainActivity : AppCompatActivity() {
 //        mSocket!!.on(Socket.EVENT_CONNECT, Emitter.Listener {
 //            mSocket!!.emit("event_id", "30324990")
 //        });
+
+//        try {
+//            mSocket = IO.socket("https://index.bluexch.com")
+//            mSocket?.let {
+//                it.connect().on(Socket.EVENT_CONNECT) {
+//                    Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//            mSocket?.connect()
+//        } catch (e: Exception) {
+//            Toast.makeText(this, "" + e.message, Toast.LENGTH_SHORT).show()
+//        }
+//
+//
     }
 
     fun setProgress() {
@@ -116,5 +145,20 @@ class MainActivity : AppCompatActivity() {
                 })
         )
 
+    }
+
+    fun getCoin(token: String) {
+        compositeDisposable.add(
+            Api().getLimitCoins(token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Consumer { res ->
+                    lifecycleScope.launch {
+                        limitManager.store(res.get(0))
+                    }
+                }, {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                })
+        )
     }
 }

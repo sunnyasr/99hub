@@ -5,7 +5,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="app_info">ALL ABOUT FOR ONLINE GAME\nZONE © 2018 99HUB.IN</string>
+    <string name="app_info">ALL ABOUT FOR ONLINE GAME<br>ZONE © 2021 99HUB.IN</br></string>
     <string name="in_play">In Play</string>
     <string name="profile">Profile</string>
     <string name="upcoming_game">Upcoming Game</string>
