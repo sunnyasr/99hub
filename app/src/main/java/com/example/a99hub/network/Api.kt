@@ -6,6 +6,7 @@ import io.reactivex.rxjava3.core.Observable
 import net.simplifiedcoding.data.responses.LimitResponse
 import net.simplifiedcoding.data.responses.LoginResponse
 import net.simplifiedcoding.data.responses.LogoutResponse
+import net.simplifiedcoding.data.responses.ProfileResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -26,6 +27,9 @@ interface Api {
 
     @GET("limit")
     fun getLimitCoins(@Query("token") token: String): Observable<List<LimitResponse>>
+
+    @GET("profile")
+    fun getProfile(@Query("token") token: String): Observable<List<ProfileResponse>>
 
     @FormUrlEncoded
     @POST("logout")
