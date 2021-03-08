@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id  'androidx.navigation.safeargs.kotlin'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -21,8 +21,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+//            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -36,8 +36,12 @@ android {
     buildFeatures {
         viewBinding true
     }
-
-
+    packagingOptions {
+        pickFirst 'META-INF/kotlinx-io.kotlin_module'
+        pickFirst 'META-INF/atomicfu.kotlin_module'
+        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        pickFirst 'META-INF/lifecycle-livedata-ktx_release.kotlin_module'
+    }
 }
 
 dependencies {
@@ -90,7 +94,7 @@ dependencies {
 
     //Coroutines and LifeCycle Libraries
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
-//    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha07"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
 
     //Spinner

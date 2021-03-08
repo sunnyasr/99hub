@@ -23,7 +23,6 @@ class LimitManager(context: Context) {
         val LOCKED_KEY = preferencesKey<String>("key_locked")
         val HIDE_COMMISSION_KEY = preferencesKey<String>("key_hide_commission")
         val NEW_KEY = preferencesKey<String>("key_new")
-        val USERNAME_KEY = preferencesKey<String>("key_username")
         val NAME_KEY = preferencesKey<String>("key_name")
         val VALID_KEY = preferencesKey<String>("key_valid")
     }
@@ -32,7 +31,6 @@ class LimitManager(context: Context) {
     suspend fun store(res: LimitResponse) {
         dataStore.edit {
             it[LIMIT_KEY] = res.current
-            it[USERNAME_KEY] = res.username
             it[LOCKED_KEY] = res.locked
             it[HIDE_COMMISSION_KEY] = res.hide_commission
             it[NEW_KEY] = res.new
@@ -45,7 +43,7 @@ class LimitManager(context: Context) {
     val coin: Flow<String>
         get() = dataStore.data
             .map { preferences ->
-                preferences[LIMIT_KEY] ?: ""
+                preferences[LIMIT_KEY] ?: "0"
             }
 
 }

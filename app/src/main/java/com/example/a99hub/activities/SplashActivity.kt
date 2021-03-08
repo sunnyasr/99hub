@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.lifecycle.asLiveData
 import com.example.a99hub.R
@@ -17,7 +18,7 @@ class SplashActivity : AppCompatActivity() {
         loginManager = LoginManager(this)
 
         loginManager.isLogged.asLiveData().observe(this, {
-            Handler().postDelayed({
+            Handler(Looper.myLooper()!!).postDelayed({
                 if (it == true)
                     startActivity(Intent(applicationContext, MainActivity::class.java))
                 else

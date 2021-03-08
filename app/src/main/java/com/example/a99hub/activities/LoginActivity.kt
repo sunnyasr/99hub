@@ -1,27 +1,24 @@
 package com.example.a99hub.activities
 
-import android.content.Context
 import android.content.Intent
-import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.os.StrictMode
 import android.text.TextUtils
-import android.text.format.Formatter
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.databinding.ActivityLoginBinding
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.simplifiedcoding.data.responses.LoginResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.InetAddress
 import java.util.*
 
 
@@ -35,10 +32,25 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+//        StrictMode.setThreadPolicy(policy)
         loginManager = LoginManager(this)
         userManager = UserManager(this)
         binding.btnLogin.setOnClickListener(this)
         setProgress()
+
+//        val thread = Thread {
+//            try {
+//                //Your code goes here
+//                Toast.makeText(this,getIP(),Toast.LENGTH_LONG).show()
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//
+//        thread.start()
+
     }
 
     fun setProgress() {
@@ -50,10 +62,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             .setDimAmount(0.5f)
     }
 
-    fun getIPAddress(): String {
-        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ipAddress: String = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
-        return ipAddress
+    fun getIP(): String {
+//        val ip = InetAddress.getLocalHost()
+//        return ip.toString()
+        return ""
     }
 
     override fun onClick(v: View?) {
@@ -66,7 +78,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             Toast.makeText(applicationContext, "enter password", Toast.LENGTH_LONG).show()
         else {
             kProgressHUD.show()
-            Api().userLogin(username, password, getIPAddress())
+            Api().userLogin(username, password, getIP())
                 .enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(
                         call: Call<LoginResponse>,
@@ -77,8 +89,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             lifecycleScope.launch {
                                 loginManager.setLogged(true)
                                 userManager.storeUser(response.body()!!)
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                val intent = Intent(this@LoginActivity, TermConditionActivity::class.java)
+//                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 startActivity(intent)
 
                             }

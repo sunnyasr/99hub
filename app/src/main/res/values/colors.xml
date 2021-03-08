@@ -9,6 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black_60">#99000000</color>
     <color name="sky_blue">#56BAEC</color>
+    <color name="sky_blue_600">#17a2b7</color>
+    <color name="sky_blue_400">#32c6d4</color>
     <color name="blue_dark">#2F5C94</color>
     <color name="blue">#007bff</color>
     <color name="red">#FF471A</color>
