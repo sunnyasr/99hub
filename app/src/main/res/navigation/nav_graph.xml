@@ -53,6 +53,9 @@
         <action
             android:id="@+id/action_inPlayFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_inPlayFragment_to_inplayDetailFragment"
+            app:destination="@id/inplayDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/upcomingGamesFragment"
@@ -107,5 +110,14 @@
         <action
             android:id="@+id/action_oldLedgerFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/inplayDetailFragment"
+        android:name="com.example.a99hub.fragments.InplayDetailFragment"
+        android:label="fragment_inplay_detail"
+        tools:layout="@layout/fragment_inplay_detail" >
+        <action
+            android:id="@+id/action_inplayDetailFragment_to_inPlayFragment"
+            app:destination="@id/inPlayFragment" />
     </fragment>
 </navigation>

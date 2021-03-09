@@ -22,6 +22,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
+
+        return binding.root
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         val navController = activity?.let {
             Navigation.findNavController(it, R.id.fragment)
         }
@@ -52,9 +59,7 @@ class HomeFragment : Fragment() {
             navController?.navigate(R.id.action_homeFragment_to_oldLedgerFragment)
         }
 
-        return binding.root
     }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

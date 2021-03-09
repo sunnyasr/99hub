@@ -20,10 +20,22 @@ class InPlayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentInPlayBinding.inflate(layoutInflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val navController = activity?.let {
+            Navigation.findNavController(it, R.id.fragment)
+        }
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
-        return binding.root
+        binding.carviwInplay.setOnClickListener {
+            navController?.navigate(R.id.action_inPlayFragment_to_inplayDetailFragment)
+        }
+
     }
 
     override fun onDestroy() {

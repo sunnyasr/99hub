@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import com.example.a99hub.R
+import com.example.a99hub.common.Common
 import com.example.a99hub.databinding.FragmentLedgerBinding
 import org.json.JSONArray
 import org.json.JSONException
@@ -79,71 +80,59 @@ class LedgerFragment : Fragment() {
 //        }
 //    }
 
-    private fun getTextView(
-        id: Int,
-        title: String,
-        color: Int,
-        typeface: Int,
-        bgColor: Int,
-        bgStyle: Int
-    ): TextView {
-        val tv = TextView(context)
-        tv.id = id
-        tv.text = title
-        tv.setTextColor(color)
-        tv.gravity = Gravity.CENTER
-        tv.setPadding(20, 20, 20, 20)
-        tv.setTypeface(Typeface.DEFAULT, typeface)
-        tv.setBackgroundColor(bgColor)
-        if (bgStyle != 0)
-            tv.setBackgroundResource(bgStyle)
-        tv.layoutParams = getLayoutParams()
-        return tv
-    }
-
-    @NonNull
-    private fun getLayoutParams(): TableRow.LayoutParams {
-        val params: TableRow.LayoutParams = TableRow.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(1, 0, 0, 1)
-        return params
-    }
-
-    @NonNull
-    private fun getTblLayoutParams(): LinearLayout.LayoutParams {
-        return TableLayout.LayoutParams(
-            TableLayout.LayoutParams.MATCH_PARENT,
-            TableLayout.LayoutParams.WRAP_CONTENT
-        )
-    }
 
     fun addHeaders() {
         val tr = TableRow(context)
-        tr.setLayoutParams(getLayoutParams())
-        tr.addView(getTextView(0, "MATCH NAME.", Color.WHITE, Typeface.NORMAL, R.color.grey,0))
-        tr.addView(getTextView(0, "WON BY", Color.WHITE, Typeface.NORMAL, R.color.grey,0))
+        tr.setLayoutParams(Common(requireContext()).getLayoutParams())
         tr.addView(
-            getTextView(
+            Common(requireContext()).getTextView(
+                0,
+                "MATCH NAME.",
+                Color.WHITE,
+                Typeface.NORMAL,
+                R.color.grey,
+                0
+            )
+        )
+        tr.addView(
+            Common(requireContext()).getTextView(
+                0,
+                "WON BY",
+                Color.WHITE,
+                Typeface.NORMAL,
+                R.color.grey,
+                0
+            )
+        )
+        tr.addView(
+            Common(requireContext()).getTextView(
                 0,
                 "WON",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.grey,0
+                R.color.grey, 0
             )
         )
-        tr.addView(getTextView(0, "LOST", Color.WHITE, Typeface.NORMAL, R.color.grey,0))
         tr.addView(
-            getTextView(
+            Common(requireContext()).getTextView(
+                0,
+                "LOST",
+                Color.WHITE,
+                Typeface.NORMAL,
+                R.color.grey,
+                0
+            )
+        )
+        tr.addView(
+            Common(requireContext()).getTextView(
                 0,
                 "BALANCE",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.grey,0
+                R.color.grey, 0
             )
         )
-        tl.addView(tr, getTblLayoutParams())
+        tl.addView(tr, Common(requireContext()).getTblLayoutParams())
     }
 
 
@@ -161,51 +150,51 @@ class LedgerFragment : Fragment() {
 
             tr.setOrientation(TableRow.VERTICAL)
             tr.addView(
-                getTextView(
+                Common(requireContext()).getTextView(
                     i,
                     "TeamA v TeamB (Jan 19,19:00PM)",
                     Color.DKGRAY,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor),R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
                 )
             )
             tr.addView(
-                getTextView(
+                Common(requireContext()).getTextView(
                     i,
                     "LION",
                     Color.DKGRAY,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor),R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
                 )
             )
             tr.addView(
-                getTextView(
+                Common(requireContext()).getTextView(
                     i,
                     "0",
                     Color.DKGRAY,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor),R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
                 )
             )
             tr.addView(
-                getTextView(
+                Common(requireContext()).getTextView(
                     i,
                     "0",
                     Color.DKGRAY,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor),R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
                 )
             )
             tr.addView(
-                getTextView(
+                Common(requireContext()).getTextView(
                     i,
                     "0",
                     Color.DKGRAY,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor),R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
                 )
             )
-            tl.addView(tr, getTblLayoutParams())
+            tl.addView(tr, Common(requireContext()).getTblLayoutParams())
         }
     }
 }
