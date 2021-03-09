@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <ImageButton
+                android:id="@+id/btn_profile"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_weight="1"
@@ -40,11 +41,11 @@
             android:orientation="vertical">
 
             <TextView
-                android:capitalize="sentences"
-                android:text="cls"
                 android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:capitalize="sentences"
+                android:text="cls"
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold" />

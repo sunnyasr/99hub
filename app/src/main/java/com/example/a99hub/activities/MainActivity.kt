@@ -1,11 +1,18 @@
 package com.example.a99hub.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.NavHostFragment.findNavController
+import com.example.a99hub.R
 import com.example.a99hub.data.dataStore.LimitManager
 import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.data.dataStore.UserManager
@@ -15,6 +22,7 @@ import com.example.a99hub.network.SocketInstance
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
+import com.google.android.material.navigation.NavigationView
 //import com.example.a99hub.network.SocketInstance
 //import com.github.nkzawa.emitter.Emitter
 //import com.github.nkzawa.socketio.client.IO
@@ -44,12 +52,21 @@ class MainActivity : AppCompatActivity() {
 
     private var mSocket: Socket? = null
 
+    val navController by lazy {
+        (supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment).navController
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setProgress()
+
+//        val navController: NavigationView = findViewById(R.id.fragment)
+
+
         limitManager = LimitManager(this)
         loginManager = LoginManager(this)
         userManager = UserManager(this)
@@ -67,6 +84,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnLogout.setOnClickListener {
             logout()
+        }
+
+        binding.btnProfile.setOnClickListener {
+            navController.navigate(R.id.profileFragment)
         }
         //Socket instance
         val app: SocketInstance = application as SocketInstance
