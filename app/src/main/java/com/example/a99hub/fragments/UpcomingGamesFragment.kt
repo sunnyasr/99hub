@@ -35,6 +35,13 @@ class UpcomingGamesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUpcomingGamesBinding.inflate(layoutInflater, container, false)
+
+        return binding.root
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -48,7 +55,6 @@ class UpcomingGamesFragment : Fragment() {
             adapter = ugAdapter
         }
         getData()
-        return binding.root
     }
 
     override fun onDestroy() {
