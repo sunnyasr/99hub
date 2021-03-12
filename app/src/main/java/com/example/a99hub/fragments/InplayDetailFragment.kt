@@ -68,7 +68,8 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,
+                16f,0
             )
         )
         tr.addView(
@@ -78,7 +79,8 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,
+                16f,0
             )
         )
         tr.addView(
@@ -87,7 +89,8 @@ class InplayDetailFragment : Fragment() {
                 "KHAI\n",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,
+                16f,0
             )
         )
         tr.addView(
@@ -97,7 +100,8 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,
+                16f,0
             )
         )
 
@@ -114,7 +118,8 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,
+                16f,0
             )
         )
         tr.addView(
@@ -124,7 +129,8 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,
+                16f,0
             )
         )
         tr.addView(
@@ -133,7 +139,7 @@ class InplayDetailFragment : Fragment() {
                 "YES",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
 
@@ -151,7 +157,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -161,7 +167,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -170,7 +176,7 @@ class InplayDetailFragment : Fragment() {
                 "YES",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
 
@@ -188,7 +194,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -198,7 +204,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -207,7 +213,7 @@ class InplayDetailFragment : Fragment() {
                 "Amount",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
         tr.addView(
@@ -216,7 +222,7 @@ class InplayDetailFragment : Fragment() {
                 "Mode",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
         tr.addView(
@@ -225,7 +231,7 @@ class InplayDetailFragment : Fragment() {
                 "Team",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
 
@@ -244,7 +250,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -254,7 +260,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -264,7 +270,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -273,7 +279,7 @@ class InplayDetailFragment : Fragment() {
                 "Amount",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
         tr.addView(
@@ -283,7 +289,7 @@ class InplayDetailFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.red,
-                0
+                0,16f,0
             )
         )
         tr.addView(
@@ -292,7 +298,7 @@ class InplayDetailFragment : Fragment() {
                 "Mode",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
         tr.addView(
@@ -301,7 +307,7 @@ class InplayDetailFragment : Fragment() {
                 "Dec",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.red, 0
+                R.color.red, 0,16f,0
             )
         )
 
@@ -329,7 +335,7 @@ class InplayDetailFragment : Fragment() {
                     "35 over run SAW",
                     Color.BLACK,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
             tr.addView(
@@ -338,7 +344,7 @@ class InplayDetailFragment : Fragment() {
                     "0.00",
                     Color.RED,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
             tr.addView(
@@ -347,7 +353,7 @@ class InplayDetailFragment : Fragment() {
                     "0.00",
                     Color.BLUE,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
 
@@ -375,7 +381,7 @@ class InplayDetailFragment : Fragment() {
                     "35 over run SAW",
                     Color.BLACK,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
             tr.addView(
@@ -384,7 +390,7 @@ class InplayDetailFragment : Fragment() {
                     "0.00",
                     Color.RED,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
             tr.addView(
@@ -393,7 +399,7 @@ class InplayDetailFragment : Fragment() {
                     "0.00",
                     Color.BLUE,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
 
@@ -422,7 +428,7 @@ class InplayDetailFragment : Fragment() {
                     "Indian Women",
                     Color.BLACK,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
             tr.addView(
@@ -431,7 +437,7 @@ class InplayDetailFragment : Fragment() {
                     "0.00",
                     Color.BLUE,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
             tr.addView(
@@ -440,7 +446,7 @@ class InplayDetailFragment : Fragment() {
                     "0.00",
                     Color.RED,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
             tr.addView(
@@ -449,7 +455,7 @@ class InplayDetailFragment : Fragment() {
                     "0",
                     Color.BLACK,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style
+                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style,16f,0
                 )
             )
 

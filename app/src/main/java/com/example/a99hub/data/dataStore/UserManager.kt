@@ -24,7 +24,7 @@ class UserManager(context: Context) {
         val CLIENT_ID_KEY = preferencesKey<String>("key_client_id")
     }
 
-    //    //Store user data
+    //Store user data
     suspend fun storeUser(res: LoginResponse) {
         dataStore.edit {
             it[STATUS_KEY] = res.status

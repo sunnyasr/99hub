@@ -64,8 +64,8 @@ class TermConditionActivity : AppCompatActivity() {
             myDialog.dismiss()
         }
         //        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        myDialog.setCancelable(false)
-        myDialog.setCanceledOnTouchOutside(false)
+        myDialog.setCancelable(true)
+        myDialog.setCanceledOnTouchOutside(true)
         myDialog.show()
     }
 }

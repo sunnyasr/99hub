@@ -41,6 +41,14 @@ interface Api {
     @GET("upcoming/sports")
     fun getAllComingGame(): Call<ResponseBody>
 
+
+    @GET("ledger")
+    fun getLedger(
+        @Query("event_id") event_id: String,
+        @Query("token") token: String,
+
+    ): Call<ResponseBody>
+
     companion object {
         operator fun invoke(): Api {
             return Retrofit.Builder()
