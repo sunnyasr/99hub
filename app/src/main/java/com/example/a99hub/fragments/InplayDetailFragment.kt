@@ -85,8 +85,6 @@ class InplayDetailFragment : Fragment() {
         userManager.token.asLiveData().observe(requireActivity(), {
             getBets(it.toString(), arguments?.getString("eventid").toString())
         })
-
-
     }
 
     fun setProgress() {
