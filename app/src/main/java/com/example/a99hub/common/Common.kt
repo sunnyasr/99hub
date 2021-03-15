@@ -64,11 +64,8 @@ class Common(context: Context) {
 
         if (click >= 0)
             tv.setOnClickListener {
-                if (click == 0)
-                    EventBus.getDefault().postSticky(BetEvent(click))
-//                    Toast.makeText(context, "Clicked KHAI", Toast.LENGTH_LONG).show()
-                if (click == 1)
-                    EventBus.getDefault().postSticky(BetEvent(click))
+
+                EventBus.getDefault().postSticky(BetEvent(click))
             }
         return tv
     }

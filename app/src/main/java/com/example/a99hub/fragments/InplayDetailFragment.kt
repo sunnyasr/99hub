@@ -567,7 +567,6 @@ class InplayDetailFragment : Fragment() {
         }
     }
 
-
     @SuppressLint("Range")
     fun addData() {
 //        val numCompanies: Int = list.size()

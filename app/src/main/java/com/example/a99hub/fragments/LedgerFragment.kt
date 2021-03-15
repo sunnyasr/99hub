@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -17,25 +18,31 @@ import com.example.a99hub.R
 import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.databinding.FragmentLedgerBinding
+import com.example.a99hub.eventBus.BetEvent
 import com.example.a99hub.model.EventModel
 import com.example.a99hub.model.LedgerModel
 import com.example.a99hub.model.MatchMarketsModel
 import com.example.a99hub.model.SessionMarketsModel
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.skydoves.balloon.Balloon
+import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonSizeSpec
+import com.skydoves.balloon.createBalloon
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.Collator
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.stream.Collectors
-import java.util.stream.Collectors.toList
 import kotlin.collections.ArrayList
+
 
 class LedgerFragment : Fragment() {
 
@@ -48,6 +55,7 @@ class LedgerFragment : Fragment() {
     private lateinit var sessionMarketList: ArrayList<SessionMarketsModel>
     private lateinit var arrayList: ArrayList<LedgerModel>
     private lateinit var kProgressHUD: KProgressHUD
+    private lateinit var balloon: Balloon
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,6 +84,7 @@ class LedgerFragment : Fragment() {
             activity?.onBackPressed()
         }
         tl = binding.table
+//        tooltip()
 
 
     }
@@ -145,7 +154,7 @@ class LedgerFragment : Fragment() {
                                 "0",
                                 "0",
                                 "settlement " + settelment.getString("remark"),
-                                "",
+                                "settlement " + settelment.getString("remark"),
                                 "",
                                 settelment.getString("created"),
                                 settelment.getString("amount").replace("-", ""),
@@ -393,15 +402,15 @@ class LedgerFragment : Fragment() {
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
-                    StringBuilder().append(arrayList.get(i - 1).getLongName()).append(dtime)
-                        .toString(),
+                    StringBuilder().append(arrayList.get(i - 1).getShortName())
+                        .toString().take(20),
                     Color.DKGRAY,
                     typeface,
                     Color.parseColor(bgColor),
                     R.drawable.profile_info_bg_style,
                     12f,
                     0,
-                    Gravity.LEFT, -1
+                    Gravity.LEFT, i + 99
                 )
             )
             tr.addView(
@@ -458,6 +467,60 @@ class LedgerFragment : Fragment() {
                 )
             )
             tl.addView(tr, Common(requireContext()).getTblLayoutParams())
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onClickBet(betEvent: BetEvent) {
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val dateFormat = SimpleDateFormat("hh:mm a")
+        val date = format.parse(arrayList.get(betEvent.betType - 100).getStartTime())
+        val time = dateFormat.format(date).toString()
+
+        val dtime =
+            StringBuilder().append(arrayList.get(betEvent.betType - 100).getLongName())
+               .append(" (")
+                .append(DateFormat.format("MMM", date))
+                .append(" ")
+                .append(DateFormat.format("dd", date))
+                .append(", ")
+                .append(time)
+                .append(")")
+
+        tooltip(dtime.toString())
+        balloon.show(requireView())
+    }
+
+    fun tooltip(msg: String) {
+        balloon = createBalloon(requireContext()) {
+            setArrowSize(0)
+            setWidth(BalloonSizeSpec.WRAP)
+            setHeight(BalloonSizeSpec.WRAP)
+            setArrowPosition(0.7f)
+            setCornerRadius(5f)
+                .setTextSize(15f)
+                .setPadding(10)
+            setAlpha(0.9f)
+                .setAutoDismissDuration(2000L)
+                .setTextGravity(Gravity.CENTER)
+            setText(msg)
+            setTextColorResource(R.color.white)
+            setTextIsHtml(true)
+            setElevation(4)
+            setBackgroundColorResource(R.color.grey_dark)
+            setBalloonAnimation(BalloonAnimation.FADE)
+            setLifecycleOwner(lifecycleOwner)
+
         }
     }
 }

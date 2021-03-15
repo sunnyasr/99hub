@@ -13,6 +13,7 @@ import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.databinding.ActivityLoginBinding
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.sdsmdg.tastytoast.TastyToast
 import kotlinx.coroutines.launch
 import net.simplifiedcoding.data.responses.LoginResponse
 import org.json.JSONException
@@ -70,9 +71,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val password = binding.etPassword.text.toString().trim()
 
         if (TextUtils.isEmpty(username))
-            Toast.makeText(applicationContext, "enter username", Toast.LENGTH_LONG).show()
+            TastyToast.makeText(applicationContext, "Enter Username", Toast.LENGTH_LONG,TastyToast.INFO)
         else if (TextUtils.isEmpty(password))
-            Toast.makeText(applicationContext, "enter password", Toast.LENGTH_LONG).show()
+            TastyToast.makeText(applicationContext, "Enter Password", Toast.LENGTH_LONG,TastyToast.INFO)
         else {
             kProgressHUD.show()
             Api().userLogin(username, password, getIP())
@@ -95,11 +96,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
 
                         } else {
-                            Toast.makeText(
+                            TastyToast.makeText(
                                 this@LoginActivity,
                                 "Invalid Username/Password try again",
-                                Toast.LENGTH_LONG
-                            ).show()
+                                Toast.LENGTH_LONG,TastyToast.ERROR
+                            )
                         }
 
                     }
