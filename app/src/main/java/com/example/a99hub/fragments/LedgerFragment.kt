@@ -402,8 +402,8 @@ class LedgerFragment : Fragment() {
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
-                    StringBuilder().append(arrayList.get(i - 1).getShortName())
-                        .toString().take(20),
+                    StringBuilder().append(arrayList.get(i-1).getLongName()).append(dtime)
+                        .toString(),
                     Color.DKGRAY,
                     typeface,
                     Color.parseColor(bgColor),
@@ -502,16 +502,15 @@ class LedgerFragment : Fragment() {
     }
 
     fun tooltip(msg: String) {
-        balloon = createBalloon(requireContext()) {
-            setArrowSize(0)
+        balloon = createBalloon(tl.context) {
+            setArrowSize(10)
             setWidth(BalloonSizeSpec.WRAP)
             setHeight(BalloonSizeSpec.WRAP)
-            setArrowPosition(0.7f)
+            setArrowPosition(0.5f)
             setCornerRadius(5f)
                 .setTextSize(15f)
                 .setPadding(10)
             setAlpha(0.9f)
-                .setAutoDismissDuration(2000L)
                 .setTextGravity(Gravity.CENTER)
             setText(msg)
             setTextColorResource(R.color.white)
