@@ -4,21 +4,26 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.format.DateFormat
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.R
 import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.databinding.FragmentLedgerBinding
 import com.example.a99hub.model.EventModel
 import com.example.a99hub.model.LedgerModel
+import com.example.a99hub.model.MatchMarketsModel
 import com.example.a99hub.model.SessionMarketsModel
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
@@ -26,9 +31,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.Collator
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Collectors.toList
-
+import kotlin.collections.ArrayList
 
 class LedgerFragment : Fragment() {
 
@@ -37,6 +44,7 @@ class LedgerFragment : Fragment() {
     private lateinit var tl: TableLayout
     private lateinit var userManager: UserManager
     private lateinit var eventList: ArrayList<EventModel>
+    private lateinit var matchMarketList: ArrayList<MatchMarketsModel>
     private lateinit var sessionMarketList: ArrayList<SessionMarketsModel>
     private lateinit var arrayList: ArrayList<LedgerModel>
     private lateinit var kProgressHUD: KProgressHUD
@@ -47,9 +55,12 @@ class LedgerFragment : Fragment() {
     ): View {
         _binding = FragmentLedgerBinding.inflate(layoutInflater, container, false)
         userManager = UserManager(requireContext())
-        userManager.token.asLiveData().observe(requireActivity(), {
-            getData(it.toString(), "30327245")
-        })
+        lifecycleScope.launch {
+            userManager.token.asLiveData().observe(requireActivity(), {
+                getData(it.toString())
+            })
+        }
+
         return binding.root
     }
 
@@ -58,6 +69,7 @@ class LedgerFragment : Fragment() {
 
         setProgress()
         arrayList = ArrayList()
+        matchMarketList = ArrayList()
         eventList = ArrayList()
         sessionMarketList = ArrayList()
         binding.btnBack.setOnClickListener {
@@ -77,24 +89,31 @@ class LedgerFragment : Fragment() {
             .setDimAmount(0.5f)
     }
 
-    private fun getData(token: String, evtid: String) {
+    private fun getData(token: String) {
         kProgressHUD.show()
         arrayList.clear()
+        matchMarketList.clear()
         eventList.clear()
         sessionMarketList.clear()
-        Api.invoke().getLedger(evtid, token).enqueue(object : Callback<ResponseBody> {
+        Api.invoke().getLedger(token).enqueue(object : Callback<ResponseBody> {
 
             @SuppressLint("NewApi")
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.code() == 200) {
-                    val res = response.body()?.string()
-                    val data: JSONObject = JSONObject(res)
+
+                    val data = JSONObject(response.body()?.string())
                     val events: JSONObject = data.getJSONObject("events")
                     val session_markets: JSONObject = data.getJSONObject("session_markets")
+                    val match_markets: JSONObject = data.getJSONObject("match_markets")
+
                     val x: Iterator<*> = events.keys()
                     val _x_session: Iterator<*> = session_markets.keys()
+                    val _x_match: Iterator<*> = match_markets.keys()
+
                     val jsonEventArray = JSONArray()
                     val jsonSessionArray = JSONArray()
+                    val jsonMatchArray = JSONArray()
+                    val jsonSettlementArray = data.getJSONArray("settlement_list")
 
                     while (x.hasNext()) {
                         val key = x.next() as String
@@ -104,6 +123,42 @@ class LedgerFragment : Fragment() {
                         val key = _x_session.next() as String
                         jsonSessionArray.put(session_markets[key])
                     }
+                    while (_x_match.hasNext()) {
+                        val key = _x_match.next() as String
+                        jsonMatchArray.put(match_markets[key])
+                    }
+
+                    for (s in 1..jsonSettlementArray.length()) {
+                        val settelment = jsonSettlementArray.getJSONObject(s - 1)
+                        var lost: String = "0"
+                        var won: String = "0"
+                        if (settelment.getString("type").equals("1")) {
+                            won = settelment.getString("amount").replace("-", "").toDouble().toInt()
+                                .toString()
+                        } else
+                            lost =
+                                settelment.getString("amount").replace("-", "").toDouble().toInt()
+                                    .toString()
+
+                        arrayList.add(
+                            LedgerModel(
+                                "0",
+                                "0",
+                                "settlement " + settelment.getString("remark"),
+                                "",
+                                "",
+                                settelment.getString("created"),
+                                settelment.getString("amount").replace("-", ""),
+
+                                lost,
+                                won,
+                                settelment.getString("amount").replace("-", "")
+                            )
+                        )
+                    }
+
+
+
                     for (i in 1..jsonEventArray.length()) {
                         val jsonObject = jsonEventArray.getJSONObject(i - 1)
                         var winner: String = ""
@@ -121,6 +176,19 @@ class LedgerFragment : Fragment() {
                         )
                     }
 
+                    for (i in 1..jsonMatchArray.length()) {
+                        val jsonObject = jsonMatchArray.getJSONObject(i - 1)
+
+                        matchMarketList.add(
+                            MatchMarketsModel(
+                                jsonObject.getString("event_id"),
+                                jsonObject.getString("market_id"),
+                                jsonObject.getString("transaction"),
+                                jsonObject.getString("commission"),
+                            )
+                        )
+                    }
+
                     for (j in 1..jsonSessionArray.length()) {
                         val sessionObject = jsonSessionArray.getJSONObject(j - 1)
                         sessionMarketList.add(
@@ -132,62 +200,91 @@ class LedgerFragment : Fragment() {
                         )
                     }
 
-
-
                     for (i in 1..eventList.size) {
                         val jsonObject = eventList.get(i - 1)
 
-
-                        val filteredList = sessionMarketList.stream().filter {
+                        val smarket = sessionMarketList.stream().filter {
                             it.getEventID().contains(jsonObject.getEventID())
 
-                        }.collect(Collectors.toList());
-                        if (filteredList.size != 0) {
-                            var lost: String = "0"
-                            var won: String = "0"
-                            val long_name: String = jsonObject.getLongName()
-                            val names = long_name.split('v')
-                            val winner: String = jsonObject.getWinner()
+                        }.collect(Collectors.toList())
+                        val mmarket = matchMarketList.stream().filter {
+                            it.getEventID().contains(jsonObject.getEventID())
 
+                        }.collect(Collectors.toList())
+                        var winner: String = jsonObject.getWinner()
+                        val names = jsonObject.getLongName().split('v')
+                        for (name in names) {
 
-                            if (filteredList.get(0).getTransaction().toDouble().toInt() > 0) {
-                                won = filteredList.get(0).getTransaction()
+                            if (name.replace(" ", "").take(1).equals(winner.take(1))) {
+                                winner = name
+                            }
+                        }
+                        var lost: String = "0"
+                        var won: String = "0"
+                        if (smarket.size != 0)
+                            if (smarket.get(0).getTransaction().toDouble() > 0) {
+                                won = smarket.get(0).getTransaction().replace("-", "").toDouble()
+                                    .toInt().toString()
                             } else {
-                                lost = filteredList.get(0).getTransaction()
+                                lost = smarket.get(0).getTransaction().replace("-", "").toDouble()
+                                    .toInt().toString()
+                            }
+                        if (mmarket.size != 0) {
+                            if (mmarket.get(0).getTransaction().toDouble() > 0) {
+                                if (won.toInt() > 0)
+                                    won = (won.toDouble() + mmarket.get(0).getTransaction()
+                                        .replace("-", "")
+                                        .toDouble()).toInt().toString()
+                                else {
+                                    val temp = (mmarket.get(0).getTransaction()
+                                        .replace("-", "")
+                                        .toDouble() - lost.toDouble()).toInt()
+                                    if (temp > 0) {
+                                        won = temp.toString().replace("-", "")
+                                        lost = "0"
+                                    } else {
+                                        lost = temp.toString().replace("-", "")
+                                        won = "0"
+                                    }
+                                }
+                            } else {
+                                if (won.toInt() > 0) {
+
+                                    won = (won.toDouble() - mmarket.get(0).getTransaction()
+                                        .replace("-", "")
+                                        .toDouble()).toInt().toString()
+                                    if (won > lost) {
+                                        lost = "0"
+                                    } else {
+                                        won = "0"
+                                    }
+                                } else {
+                                    lost = (lost.toDouble() + mmarket.get(0).getTransaction()
+                                        .replace("-", "")
+                                        .toDouble()).toInt().toString()
+                                }
                             }
 
-
-                            arrayList.add(
-                                LedgerModel(
-                                    jsonObject.getEventID(),
-                                    jsonObject.getMarketID(),
-                                    jsonObject.getLongName(),
-                                    jsonObject.getShortName(),
-                                    jsonObject.getWinner(),
-                                    jsonObject.getStartTime(),
-                                    filteredList.get(0).getTransaction(),
-                                    lost,
-                                    won,
-                                    filteredList.get(0).getTransaction()
-                                )
-                            )
-                        } else {
-                            arrayList.add(
-                                LedgerModel(
-                                    jsonObject.getEventID(),
-                                    jsonObject.getMarketID(),
-                                    jsonObject.getLongName(),
-                                    jsonObject.getShortName(),
-                                    jsonObject.getWinner(),
-                                    jsonObject.getStartTime(),
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "0"
-                                )
-                            )
                         }
 
+                        arrayList.add(
+                            LedgerModel(
+                                jsonObject.getEventID(),
+                                jsonObject.getMarketID(),
+                                jsonObject.getLongName(),
+                                jsonObject.getShortName(),
+                                winner,
+                                jsonObject.getStartTime(),
+                                (won.toDouble().toInt() + lost.toDouble().toInt()).toString(),
+                                lost,
+                                won,
+                                (won.toDouble().toInt() + lost.toDouble().toInt()).toString(),
+                            )
+                        )
+                    }
+
+                    arrayList.sortBy {
+                        it.getStartTime()
                     }
                     tl.removeAllViews()
 
@@ -211,7 +308,7 @@ class LedgerFragment : Fragment() {
 
     fun addHeaders() {
         val tr = TableRow(context)
-        tr.setLayoutParams(Common(requireContext()).getLayoutParams())
+        tr.layoutParams = Common(requireContext()).getLayoutParams()
         tr.addView(
             Common(requireContext()).getTextView(
                 0,
@@ -219,7 +316,7 @@ class LedgerFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.grey,
-                0, 14f, 0
+                0, 12f, 0, Gravity.CENTER, -1
             )
         )
         tr.addView(
@@ -229,7 +326,7 @@ class LedgerFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.grey,
-                0, 14f, 0
+                0, 12f, 0, Gravity.CENTER, -1
             )
         )
         tr.addView(
@@ -238,7 +335,7 @@ class LedgerFragment : Fragment() {
                 "WON",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.grey, 0, 14f, 0
+                R.color.grey, 0, 12f, 0, Gravity.CENTER, -1
             )
         )
         tr.addView(
@@ -248,7 +345,7 @@ class LedgerFragment : Fragment() {
                 Color.WHITE,
                 Typeface.NORMAL,
                 R.color.grey,
-                0, 14f, 0
+                0, 12f, 0, Gravity.CENTER, -1
             )
         )
         tr.addView(
@@ -257,7 +354,7 @@ class LedgerFragment : Fragment() {
                 "BALANCE",
                 Color.WHITE,
                 Typeface.NORMAL,
-                R.color.grey, 0, 14f, 0,
+                R.color.grey, 0, 12f, 0, Gravity.CENTER, -1
             )
         )
         tl.addView(tr, Common(requireContext()).getTblLayoutParams())
@@ -265,25 +362,46 @@ class LedgerFragment : Fragment() {
 
     @SuppressLint("Range")
     fun addData() {
-//        val numCompanies: Int = list.size()
-        //
-//        for (i in 0 until list.size()) {
-        for (i in 1..eventList.size) {
+        var blc: Number
+        blc = 0
+        for (i in 1..arrayList.size) {
+            blc += arrayList.get(i - 1).getWon().toDouble().toInt()
+            blc -= arrayList.get(i - 1).getLost().toDouble().toInt()
 
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val dateFormat = SimpleDateFormat("hh:mm a")
+            val date = format.parse(arrayList.get(i - 1).getStartTime())
+            val time = dateFormat.format(date).toString()
+
+            val dtime = StringBuilder().append(" (").append(DateFormat.format("MMM", date))
+                .append(" ")
+                .append(DateFormat.format("dd", date))
+                .append(", ")
+                .append(time)
+                .append(")")
+
+            var typeface = Typeface.NORMAL
+            if (arrayList.get(i - 1).getEventID().equals("0"))
+                typeface = Typeface.BOLD
             var bgColor = ""
             bgColor = if (i % 2 == 0) {
                 "#FFFFFF"
             } else "#FFFFFF"
             val tr = TableRow(context)
 
-            tr.setOrientation(TableRow.VERTICAL)
+            tr.orientation = TableRow.VERTICAL
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
-                    StringBuilder().append(arrayList.get(i - 1).getLongName()).toString(),
+                    StringBuilder().append(arrayList.get(i - 1).getLongName()).append(dtime)
+                        .toString(),
                     Color.DKGRAY,
-                    Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style, 14f, 0
+                    typeface,
+                    Color.parseColor(bgColor),
+                    R.drawable.profile_info_bg_style,
+                    12f,
+                    0,
+                    Gravity.LEFT, -1
                 )
             )
             tr.addView(
@@ -292,34 +410,51 @@ class LedgerFragment : Fragment() {
                     arrayList.get(i - 1).getWinner(),
                     Color.DKGRAY,
                     Typeface.NORMAL,
-                    Color.parseColor("#FF471A"), R.drawable.profile_info_bg_style, 14f, 0
+                    Color.parseColor("#FF471A"),
+                    R.drawable.profile_info_bg_style,
+                    12f,
+                    0,
+                    Gravity.CENTER, -1
                 )
             )
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
                     arrayList.get(i - 1).getWon(),
-                    Color.GREEN,
+                    Color.parseColor("#2E7D32"),
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style, 14f, 0
+                    Color.parseColor(bgColor),
+                    R.drawable.profile_info_bg_style,
+                    12f,
+                    0,
+                    Gravity.RIGHT, -1
                 )
             )
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
-                    arrayList[i - 1].getLost(),
+                    StringBuilder().append("-").append(arrayList.get(i - 1).getLost())
+                        .toString(),
                     Color.RED,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style, 14f, 0
+                    Color.parseColor(bgColor),
+                    R.drawable.profile_info_bg_style,
+                    12f,
+                    0,
+                    Gravity.RIGHT, -1
                 )
             )
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
-                    arrayList[i - 1].getBalance(),
+                    blc.toString(),
                     Color.DKGRAY,
                     Typeface.NORMAL,
-                    Color.parseColor(bgColor), R.drawable.profile_info_bg_style, 14f, 0
+                    Color.parseColor(bgColor),
+                    R.drawable.profile_info_bg_style,
+                    12f,
+                    0,
+                    Gravity.RIGHT, -1
                 )
             )
             tl.addView(tr, Common(requireContext()).getTblLayoutParams())

@@ -28,6 +28,12 @@ interface Api {
     @GET("limit")
     fun getLimitCoins(@Query("token") token: String): Observable<List<LimitResponse>>
 
+    @GET("limit")
+    fun getBets(
+        @Query("token") token: String,
+        @Query("event_id") event_id: String
+    ): Observable<ResponseBody>
+
     @GET("profile")
     fun getProfile(@Query("token") token: String): Observable<List<ProfileResponse>>
 
@@ -44,9 +50,7 @@ interface Api {
 
     @GET("ledger")
     fun getLedger(
-        @Query("event_id") event_id: String,
         @Query("token") token: String,
-
     ): Call<ResponseBody>
 
     companion object {

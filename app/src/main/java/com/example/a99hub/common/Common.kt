@@ -3,12 +3,11 @@ package com.example.a99hub.common
 import android.content.Context
 import android.graphics.Typeface
 import android.view.Gravity
-import android.widget.LinearLayout
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.NonNull
 import com.example.a99hub.R
+import com.example.a99hub.eventBus.BetEvent
+import org.greenrobot.eventbus.EventBus
 
 class Common(context: Context) {
     private var context: Context
@@ -43,7 +42,9 @@ class Common(context: Context) {
         bgColor: Int,
         bgStyle: Int,
         fontSize: Float,
-        drawable: Int
+        drawable: Int,
+        gravity: Int,
+        click: Int
 
     ): TextView {
         val tv = TextView(context)
@@ -53,13 +54,22 @@ class Common(context: Context) {
         if (drawable != 0)
             tv.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0)
         tv.setTextColor(color)
-        tv.gravity = Gravity.CENTER
+        tv.gravity = gravity
         tv.setPadding(20, 20, 20, 20)
         tv.setTypeface(Typeface.DEFAULT, typeface)
         tv.setBackgroundColor(bgColor)
         if (bgStyle != 0)
             tv.setBackgroundResource(bgStyle)
         tv.layoutParams = getLayoutParams()
+
+        if (click >= 0)
+            tv.setOnClickListener {
+                if (click == 0)
+                    EventBus.getDefault().postSticky(BetEvent(click))
+//                    Toast.makeText(context, "Clicked KHAI", Toast.LENGTH_LONG).show()
+                if (click == 1)
+                    EventBus.getDefault().postSticky(BetEvent(click))
+            }
         return tv
     }
 

@@ -15,6 +15,7 @@ import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.coroutines.launch
 import net.simplifiedcoding.data.responses.LoginResponse
+import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,27 +31,24 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var kProgressHUD: KProgressHUD
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+        try {
+            // JSON here
+        } catch (e2: JSONException) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace()
+        } catch (e: Exception) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-//        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-//        StrictMode.setThreadPolicy(policy)
         loginManager = LoginManager(this)
         userManager = UserManager(this)
         binding.btnLogin.setOnClickListener(this)
         setProgress()
-
-//        val thread = Thread {
-//            try {
-//                //Your code goes here
-//                Toast.makeText(this,getIP(),Toast.LENGTH_LONG).show()
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
-//
-//        thread.start()
-
     }
 
     fun setProgress() {
@@ -63,9 +61,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun getIP(): String {
-//        val ip = InetAddress.getLocalHost()
-//        return ip.toString()
-        return ""
+        val ip = InetAddress.getLocalHost()
+        return ip.toString().replace("localhost/", "")
     }
 
     override fun onClick(v: View?) {
@@ -89,7 +86,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             lifecycleScope.launch {
                                 loginManager.setLogged(true)
                                 userManager.storeUser(response.body()!!)
-                                val intent = Intent(this@LoginActivity, TermConditionActivity::class.java)
+                                val intent =
+                                    Intent(this@LoginActivity, TermConditionActivity::class.java)
 //                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 startActivity(intent)
 

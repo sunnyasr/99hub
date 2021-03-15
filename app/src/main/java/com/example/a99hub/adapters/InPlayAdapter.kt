@@ -8,9 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a99hub.R
+import com.example.a99hub.eventBus.InPLayEvent
 import com.example.a99hub.model.UGModel
+import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,8 +22,8 @@ class InPlayAdapter(private val context: Context?, private var arrayList: ArrayL
 
     inner class InPlayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val team: TextView = itemView.findViewById(R.id.tv_team_name)
-        val date: TextView = itemView.findViewById(R.id.tv_date)
-        val declared: TextView = itemView.findViewById(R.id.tv_declared)
+        val date: TextView = itemView.findViewById(R.id.tv_time)
+        val cardView: CardView = itemView.findViewById(R.id.carviw_inplay)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InPlayViewHolder {
@@ -35,8 +38,7 @@ class InPlayAdapter(private val context: Context?, private var arrayList: ArrayL
     override fun onBindViewHolder(holder: InPlayViewHolder, position: Int) {
         val game = arrayList[position]
         holder.team.text = game.getLongName()
-        holder.date.text = game.getStartTime()
-        holder.declared.text = StringBuilder().append( "Declared").append(" : ").append("NO")
+
 
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val dateFormat = SimpleDateFormat("hh:mm a")
@@ -48,6 +50,10 @@ class InPlayAdapter(private val context: Context?, private var arrayList: ArrayL
             .append(DateFormat.format("dd", date))
             .append(", ")
             .append(time)
+
+        holder.cardView.setOnClickListener {
+            EventBus.getDefault().postSticky(InPLayEvent(game))
+        }
 
 
     }

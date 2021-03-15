@@ -1,25 +1,27 @@
 package com.example.a99hub.fragments
 
+
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a99hub.R
 import com.example.a99hub.adapters.InPlayAdapter
-import com.example.a99hub.adapters.UGAdapter
 import com.example.a99hub.databinding.FragmentInPlayBinding
+import com.example.a99hub.eventBus.InPLayEvent
 import com.example.a99hub.model.UGModel
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
 import okhttp3.ResponseBody
-
-
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -34,6 +36,7 @@ class InPlayFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var inPLayAdapter: InPlayAdapter
     private lateinit var arraList: ArrayList<UGModel>
+    private var navController: NavController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +49,7 @@ class InPlayFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val navController = activity?.let {
+        navController = activity?.let {
             Navigation.findNavController(it, R.id.fragment)
         }
         setProgress()
@@ -62,13 +65,7 @@ class InPlayFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = inPLayAdapter
         }
-
         getData()
-
-//        binding.carviwInplay.setOnClickListener {
-//            navController?.navigate(R.id.action_inPlayFragment_to_inplayDetailFragment)
-//        }
-
     }
 
     override fun onDestroy() {
@@ -112,9 +109,8 @@ class InPlayFragment : Fragment() {
                             jsonObject.getString("display_picture"),
                             jsonObject.getString("inactive")
                         )
-                        if (ugModel.getInactive().equals("1"))
+                        if (ugModel.getInactive().equals("0"))
                             arraList.add(ugModel)
-
                     }
                     kProgressHUD.dismiss()
                     inPLayAdapter.setData(arraList)
@@ -138,4 +134,20 @@ class InPlayFragment : Fragment() {
             .setDimAmount(0.5f)
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEventClicked(inPLayEvent: InPLayEvent) {
+        val bundle = Bundle()
+        bundle.putString("eventid", inPLayEvent.ugModel.getEventID())
+        navController?.navigate(R.id.action_inPlayFragment_to_inplayDetailFragment, bundle)
+    }
 }
