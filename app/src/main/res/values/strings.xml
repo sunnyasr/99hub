@@ -36,5 +36,6 @@
     <string name="thanks_visiting">Thanks For Visiting Our Site</string>
     <string name="cnt">Continue</string>
     <string name="back_to_in_play">Back To In Play Games</string>
+    <string name="no_ledger">Nothing In Your Ledger !</string>
 
 </resources>

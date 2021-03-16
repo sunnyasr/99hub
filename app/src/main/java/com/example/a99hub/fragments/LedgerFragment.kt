@@ -3,14 +3,16 @@ package com.example.a99hub.fragments
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
+import android.opengl.Visibility
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -36,12 +38,12 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.json.JSONObject
+import org.json.JSONTokener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.stream.Collectors
-import kotlin.collections.ArrayList
 
 
 class LedgerFragment : Fragment() {
@@ -62,19 +64,19 @@ class LedgerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLedgerBinding.inflate(layoutInflater, container, false)
-        userManager = UserManager(requireContext())
-        lifecycleScope.launch {
-            userManager.token.asLiveData().observe(requireActivity(), {
-                getData(it.toString())
-            })
-        }
+
 
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        userManager = UserManager(requireContext())
+        lifecycleScope.launch {
+            userManager.token.asLiveData().observe(requireActivity(), {
+                getData(it.toString())
+            })
+        }
         setProgress()
         arrayList = ArrayList()
         matchMarketList = ArrayList()
@@ -84,9 +86,6 @@ class LedgerFragment : Fragment() {
             activity?.onBackPressed()
         }
         tl = binding.table
-//        tooltip()
-
-
     }
 
     fun setProgress() {
@@ -110,32 +109,82 @@ class LedgerFragment : Fragment() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.code() == 200) {
 
-                    val data = JSONObject(response.body()?.string())
-                    val events: JSONObject = data.getJSONObject("events")
-                    val session_markets: JSONObject = data.getJSONObject("session_markets")
-                    val match_markets: JSONObject = data.getJSONObject("match_markets")
+                    val data = JSONObject(response.body()?.string()!!)
+                    kProgressHUD.dismiss()
+                    /*EVENTS*/
+                    if (Common(requireContext()).checkJSONObject(data.getString("events"))) {
+                        val events: JSONObject = data.getJSONObject("events")
+                        val x: Iterator<*> = events.keys()
+                        val jsonEventArray = JSONArray()
+                        while (x.hasNext()) {
+                            val key = x.next() as String
+                            jsonEventArray.put(events[key])
+                        }
 
-                    val x: Iterator<*> = events.keys()
-                    val _x_session: Iterator<*> = session_markets.keys()
-                    val _x_match: Iterator<*> = match_markets.keys()
+                        for (i in 1..jsonEventArray.length()) {
+                            val jsonObject = jsonEventArray.getJSONObject(i - 1)
+                            var winner: String = ""
+                            if (!jsonObject.getString("winner").equals("null"))
+                                winner = jsonObject.getString("winner")
+                            eventList.add(
+                                EventModel(
+                                    jsonObject.getString("event_id"),
+                                    jsonObject.getString("market_id"),
+                                    jsonObject.getString("long_name"),
+                                    jsonObject.getString("short_name"),
+                                    winner,
+                                    jsonObject.getString("start_time"),
+                                )
+                            )
+                        }
+                    }
 
-                    val jsonEventArray = JSONArray()
-                    val jsonSessionArray = JSONArray()
-                    val jsonMatchArray = JSONArray()
+                    /*SESSION MARKET*/
+                    if (Common(requireContext()).checkJSONObject(data.getString("session_markets"))) {
+                        val session_markets: JSONObject = data.getJSONObject("session_markets")
+                        val _x_session: Iterator<*> = session_markets.keys()
+                        val jsonSessionArray = JSONArray()
+                        while (_x_session.hasNext()) {
+                            val key = _x_session.next() as String
+                            jsonSessionArray.put(session_markets[key])
+                        }
+                        for (j in 1..jsonSessionArray.length()) {
+                            val sessionObject = jsonSessionArray.getJSONObject(j - 1)
+                            sessionMarketList.add(
+                                SessionMarketsModel(
+                                    sessionObject.getString("event_id"),
+                                    sessionObject.getString("transaction"),
+                                    sessionObject.getString("commission")
+                                )
+                            )
+                        }
+                    }
+
+                    /*MATCH MARKET*/
+                    if (Common(requireContext()).checkJSONObject(data.getString("match_markets"))) {
+                        val match_markets: JSONObject = data.getJSONObject("match_markets")
+                        val _x_match: Iterator<*> = match_markets.keys()
+                        val jsonMatchArray = JSONArray()
+                        while (_x_match.hasNext()) {
+                            val key = _x_match.next() as String
+                            jsonMatchArray.put(match_markets[key])
+                        }
+                        for (i in 1..jsonMatchArray.length()) {
+                            val jsonObject = jsonMatchArray.getJSONObject(i - 1)
+
+                            matchMarketList.add(
+                                MatchMarketsModel(
+                                    jsonObject.getString("event_id"),
+                                    jsonObject.getString("market_id"),
+                                    jsonObject.getString("transaction"),
+                                    jsonObject.getString("commission"),
+                                )
+                            )
+                        }
+                    }
+
+
                     val jsonSettlementArray = data.getJSONArray("settlement_list")
-
-                    while (x.hasNext()) {
-                        val key = x.next() as String
-                        jsonEventArray.put(events[key])
-                    }
-                    while (_x_session.hasNext()) {
-                        val key = _x_session.next() as String
-                        jsonSessionArray.put(session_markets[key])
-                    }
-                    while (_x_match.hasNext()) {
-                        val key = _x_match.next() as String
-                        jsonMatchArray.put(match_markets[key])
-                    }
 
                     for (s in 1..jsonSettlementArray.length()) {
                         val settelment = jsonSettlementArray.getJSONObject(s - 1)
@@ -162,49 +211,6 @@ class LedgerFragment : Fragment() {
                                 lost,
                                 won,
                                 settelment.getString("amount").replace("-", "")
-                            )
-                        )
-                    }
-
-
-
-                    for (i in 1..jsonEventArray.length()) {
-                        val jsonObject = jsonEventArray.getJSONObject(i - 1)
-                        var winner: String = ""
-                        if (!jsonObject.getString("winner").equals("null"))
-                            winner = jsonObject.getString("winner")
-                        eventList.add(
-                            EventModel(
-                                jsonObject.getString("event_id"),
-                                jsonObject.getString("market_id"),
-                                jsonObject.getString("long_name"),
-                                jsonObject.getString("short_name"),
-                                winner,
-                                jsonObject.getString("start_time"),
-                            )
-                        )
-                    }
-
-                    for (i in 1..jsonMatchArray.length()) {
-                        val jsonObject = jsonMatchArray.getJSONObject(i - 1)
-
-                        matchMarketList.add(
-                            MatchMarketsModel(
-                                jsonObject.getString("event_id"),
-                                jsonObject.getString("market_id"),
-                                jsonObject.getString("transaction"),
-                                jsonObject.getString("commission"),
-                            )
-                        )
-                    }
-
-                    for (j in 1..jsonSessionArray.length()) {
-                        val sessionObject = jsonSessionArray.getJSONObject(j - 1)
-                        sessionMarketList.add(
-                            SessionMarketsModel(
-                                sessionObject.getString("event_id"),
-                                sessionObject.getString("transaction"),
-                                sessionObject.getString("commission")
                             )
                         )
                     }
@@ -297,9 +303,14 @@ class LedgerFragment : Fragment() {
                     }
                     tl.removeAllViews()
 
-                    addHeaders()
-                    addData()
-                    kProgressHUD.dismiss()
+                    if (arrayList.size > 0) {
+                        addHeaders()
+                        addData()
+                        binding.tvEmpty.visibility = GONE
+                    } else {
+                        binding.tvEmpty.visibility = VISIBLE
+                    }
+
                 }
             }
 
@@ -393,16 +404,17 @@ class LedgerFragment : Fragment() {
             if (arrayList.get(i - 1).getEventID().equals("0"))
                 typeface = Typeface.BOLD
             var bgColor = ""
-            bgColor = if (i % 2 == 0) {
-                "#FFFFFF"
-            } else "#FFFFFF"
+            bgColor =
+                if (i % 2 == 0) {
+                    "#FFFFFF"
+                } else "#FFFFFF"
             val tr = TableRow(context)
 
             tr.orientation = TableRow.VERTICAL
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
-                    StringBuilder().append(arrayList.get(i-1).getLongName()).append(dtime)
+                    StringBuilder().append(arrayList.get(i - 1).getShortName())
                         .toString(),
                     Color.DKGRAY,
                     typeface,
@@ -453,11 +465,20 @@ class LedgerFragment : Fragment() {
                     Gravity.RIGHT, -1
                 )
             )
+
+            var colorBalance: Int = 0
+
+            if (blc > 0) {
+                colorBalance = Color.parseColor("#2E7D32")
+            } else
+                colorBalance = Color.RED
+
+
             tr.addView(
                 Common(requireContext()).getTextView(
                     i,
                     blc.toString(),
-                    Color.DKGRAY,
+                    colorBalance,
                     Typeface.NORMAL,
                     Color.parseColor(bgColor),
                     R.drawable.profile_info_bg_style,
@@ -489,7 +510,7 @@ class LedgerFragment : Fragment() {
 
         val dtime =
             StringBuilder().append(arrayList.get(betEvent.betType - 100).getLongName())
-               .append(" (")
+                .append(" (")
                 .append(DateFormat.format("MMM", date))
                 .append(" ")
                 .append(DateFormat.format("dd", date))
@@ -522,4 +543,5 @@ class LedgerFragment : Fragment() {
 
         }
     }
+
 }

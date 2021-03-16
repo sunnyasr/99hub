@@ -71,7 +71,7 @@ class UpcomingGamesFragment : Fragment() {
         Api.invoke().getAllComingGame().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.code() == 200) {
-
+                    kProgressHUD.dismiss()
                     val res = response.body()?.string()
                     val data: JSONObject = JSONObject(res)
                     val events: JSONObject = data.getJSONObject("events")
@@ -82,12 +82,7 @@ class UpcomingGamesFragment : Fragment() {
                         val key = x.next() as String
                         jsonArray.put(events[key])
                     }
-
-
-
                     for (i in 1..jsonArray.length()) {
-
-
                         val jsonObject = jsonArray.getJSONObject(i - 1)
                         val ugModel = UGModel(
                             jsonObject.getString("sport_id"),
@@ -106,7 +101,7 @@ class UpcomingGamesFragment : Fragment() {
                             arraList.add(ugModel)
 
                     }
-                    kProgressHUD.dismiss()
+
                     ugAdapter.setData(arraList)
 
                 }

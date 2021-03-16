@@ -8,6 +8,9 @@ import androidx.annotation.NonNull
 import com.example.a99hub.R
 import com.example.a99hub.eventBus.BetEvent
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONArray
+import org.json.JSONObject
+import org.json.JSONTokener
 
 class Common(context: Context) {
     private var context: Context
@@ -68,6 +71,18 @@ class Common(context: Context) {
                 EventBus.getDefault().postSticky(BetEvent(click))
             }
         return tv
+    }
+
+    fun checkJSONObject(str: String): Boolean {
+
+        var result: Boolean = false
+        val json: Object = JSONTokener(str).nextValue() as Object;
+        if (json is JSONObject)
+            result = true
+        else if (json is JSONArray)
+            result = false
+
+        return result
     }
 
 

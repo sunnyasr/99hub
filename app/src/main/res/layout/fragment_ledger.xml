@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/off_white"
+    android:orientation="vertical"
     android:padding="2dp"
     tools:context=".fragments.LedgerFragment">
 
@@ -20,6 +20,7 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         app:backgroundTint="@null" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,6 +34,19 @@
         android:textStyle="bold"
         app:backgroundTint="@null" />
 
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/no_recound_found_style"
+        android:padding="10dp"
+        android:text="@string/no_ledger"
+        android:visibility="gone" />
+
     <ScrollView
         android:id="@+id/layout"
         android:layout_width="match_parent"
@@ -41,12 +55,12 @@
         android:scrollbarStyle="outsideInset"
         android:scrollbars="horizontal|vertical">
 
+
         <HorizontalScrollView
             android:id="@+id/horizontalView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="horizontal|vertical">
-
 
             <TableLayout
                 android:id="@+id/table"

@@ -97,6 +97,7 @@ class InplayDetailFragment : Fragment() {
     }
 
     fun getBets(token: String, eventID: String) {
+        Log.d("bets_session", eventID)
         kProgressHUD.show()
         betsList.clear()
         sessionBetsList.clear()
@@ -105,6 +106,7 @@ class InplayDetailFragment : Fragment() {
             Api().getBets(token, eventID).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ res ->
+//                    Toast.makeText(context, res?.string().toString(), Toast.LENGTH_LONG).show()
                     val data = JSONObject(res?.string())
                     val tempBets: JSONObject = data.getJSONObject("0")
                     val tempSessionBets: JSONObject = data.getJSONObject("1")
@@ -114,20 +116,24 @@ class InplayDetailFragment : Fragment() {
                     val jsonBetsArray = JSONArray()
                     while (x.hasNext()) {
                         val key = x.next() as String
-                        jsonSessionBetsArray.put(tempBets[key])
+//                        Toast.makeText(context, key + " : " + eventID, Toast.LENGTH_LONG).show()
+//                        if (key.contains(eventID)) {
+//                            Toast.makeText(context, key + " : " + eventID, Toast.LENGTH_LONG).show()
+//                        }
+                        jsonBetsArray.put(tempBets[key])
                     }
                     while (x1.hasNext()) {
                         val key = x1.next() as String
-                        jsonBetsArray.put(tempSessionBets[key])
+                        jsonSessionBetsArray.put(tempSessionBets[key])
                     }
 
-                    Log.d("bets_session", jsonBetsArray.toString())
+                    Log.d("bets_session", eventID)
 
                     val jsonBetArray =
                         jsonBetsArray.getJSONObject(0).getJSONArray("bets") as JSONArray
                     val jsonSBetsArray =
-                        jsonSessionBetsArray.getJSONObject(1).getJSONArray("bets") as JSONArray
-
+                        jsonSessionBetsArray.getJSONObject(0).getJSONArray("bets") as JSONArray
+//                    Toast.makeText(context, jsonSBetsArray.toString(), Toast.LENGTH_LONG).show()
                     for (i in 1..jsonBetArray.length()) {
                         val jsonObject = jsonBetArray.getJSONObject(i - 1)
                         betsList.add(
@@ -156,8 +162,7 @@ class InplayDetailFragment : Fragment() {
                     addRowsBets()
 
                     val name: String =
-
-                        jsonSessionBetsArray.getJSONObject(1).getString("name")
+                        jsonSessionBetsArray.getJSONObject(0).getString("name")
                     for (i in 1..jsonSBetsArray.length()) {
                         val jsonObject = jsonSBetsArray.getJSONObject(i - 1)
                         sessionBetsList.add(

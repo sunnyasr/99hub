@@ -3,10 +3,7 @@ package com.example.a99hub.network
 import com.example.a99hub.model.UGModel
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.core.Observable
-import net.simplifiedcoding.data.responses.LimitResponse
-import net.simplifiedcoding.data.responses.LoginResponse
-import net.simplifiedcoding.data.responses.LogoutResponse
-import net.simplifiedcoding.data.responses.ProfileResponse
+import net.simplifiedcoding.data.responses.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -24,9 +21,20 @@ interface Api {
         @Field("ip") ip: String,
     ): Call<LoginResponse>
 
+    @FormUrlEncoded
+    @POST("update/password")
+    fun changePass(
+        @Field("token") token: String,
+        @Field("old") old: String,
+        @Field("new") new: String,
+    ): Observable<ChangePassResponse>
+
 
     @GET("limit")
-    fun getLimitCoins(@Query("token") token: String): Observable<List<LimitResponse>>
+    fun getLimitCoins(@Query("token") token: String): Call<ResponseBody>
+
+    @GET("completed/sports")
+    fun getCompletedGames(@Query("token") token: String): Observable<ResponseBody>
 
     @GET("limit")
     fun getBets(
@@ -46,6 +54,9 @@ interface Api {
 
     @GET("upcoming/sports")
     fun getAllComingGame(): Call<ResponseBody>
+
+    @GET("inplay/sports")
+    fun getInPlay(): Observable<ResponseBody>
 
 
     @GET("ledger")
