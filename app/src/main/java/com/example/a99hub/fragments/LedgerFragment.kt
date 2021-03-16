@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.R
 import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentLedgerBinding
 import com.example.a99hub.eventBus.BetEvent
 import com.example.a99hub.model.EventModel
@@ -51,7 +52,6 @@ class LedgerFragment : Fragment() {
     private var _binding: FragmentLedgerBinding? = null
     private val binding get() = _binding!!
     private lateinit var tl: TableLayout
-    private lateinit var userManager: UserManager
     private lateinit var eventList: ArrayList<EventModel>
     private lateinit var matchMarketList: ArrayList<MatchMarketsModel>
     private lateinit var sessionMarketList: ArrayList<SessionMarketsModel>
@@ -71,12 +71,6 @@ class LedgerFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        userManager = UserManager(requireContext())
-        lifecycleScope.launch {
-            userManager.token.asLiveData().observe(requireActivity(), {
-                getData(it.toString())
-            })
-        }
         setProgress()
         arrayList = ArrayList()
         matchMarketList = ArrayList()
@@ -86,6 +80,7 @@ class LedgerFragment : Fragment() {
             activity?.onBackPressed()
         }
         tl = binding.table
+        getData(Token(requireContext()).getToken())
     }
 
     fun setProgress() {

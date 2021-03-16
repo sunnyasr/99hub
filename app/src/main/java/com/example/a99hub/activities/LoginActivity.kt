@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.ActivityLoginBinding
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -29,7 +31,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var loginManager: LoginManager
     private lateinit var userManager: UserManager
+    private lateinit var token: Token
     private lateinit var kProgressHUD: KProgressHUD
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -43,7 +48,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             // TODO Auto-generated catch block
             e.printStackTrace()
         }
-
+        token = Token(this)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loginManager = LoginManager(this)
@@ -71,9 +76,19 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val password = binding.etPassword.text.toString().trim()
 
         if (TextUtils.isEmpty(username))
-            TastyToast.makeText(applicationContext, "Enter Username", Toast.LENGTH_LONG,TastyToast.INFO)
+            TastyToast.makeText(
+                applicationContext,
+                "Enter Username",
+                Toast.LENGTH_LONG,
+                TastyToast.INFO
+            )
         else if (TextUtils.isEmpty(password))
-            TastyToast.makeText(applicationContext, "Enter Password", Toast.LENGTH_LONG,TastyToast.INFO)
+            TastyToast.makeText(
+                applicationContext,
+                "Enter Password",
+                Toast.LENGTH_LONG,
+                TastyToast.INFO
+            )
         else {
             kProgressHUD.show()
             Api().userLogin(username, password, getIP())
@@ -87,6 +102,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             lifecycleScope.launch {
                                 loginManager.setLogged(true)
                                 userManager.storeUser(response.body()!!)
+                                token.setToken(response.body()!!.token)
+                                Log.d("token_main",response.body()!!.token)
                                 val intent =
                                     Intent(this@LoginActivity, TermConditionActivity::class.java)
 //                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -99,7 +116,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             TastyToast.makeText(
                                 this@LoginActivity,
                                 "Invalid Username/Password try again",
-                                Toast.LENGTH_LONG,TastyToast.ERROR
+                                Toast.LENGTH_LONG, TastyToast.ERROR
                             )
                         }
 

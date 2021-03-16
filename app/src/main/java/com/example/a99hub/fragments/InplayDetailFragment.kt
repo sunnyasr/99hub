@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.R
 import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentInplayDetailBinding
 import com.example.a99hub.eventBus.BetEvent
 import com.example.a99hub.model.BetsModel
@@ -46,7 +47,7 @@ class InplayDetailFragment : Fragment() {
     private lateinit var tbSessionBets: TableLayout
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var userManager: UserManager
+
 
     private lateinit var betsList: ArrayList<BetsModel>
     private lateinit var sessionBetsList: ArrayList<BetsModel>
@@ -62,7 +63,6 @@ class InplayDetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        userManager = activity?.let { UserManager(it.applicationContext) }!!
         compositeDisposable = CompositeDisposable()
         setProgress()
         betsList = ArrayList()
@@ -82,9 +82,9 @@ class InplayDetailFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
-        userManager.token.asLiveData().observe(requireActivity(), {
-            getBets(it.toString(), arguments?.getString("eventid").toString())
-        })
+
+        getBets(Token(requireContext()).getToken(), arguments?.getString("eventid").toString())
+
     }
 
     fun setProgress() {

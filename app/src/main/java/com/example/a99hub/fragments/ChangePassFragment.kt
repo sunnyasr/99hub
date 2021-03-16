@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.lifecycle.asLiveData
 import com.example.a99hub.R
 import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentChangePassBinding
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -25,9 +26,9 @@ class ChangePassFragment : Fragment() {
     private var _binding: FragmentChangePassBinding? = null
     private val binding get() = _binding!!
     private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var userManager: UserManager
+
     private lateinit var kProgressHUD: KProgressHUD
-    private var token: String = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,15 +50,13 @@ class ChangePassFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        userManager = UserManager(requireContext())
+
         compositeDisposable = CompositeDisposable()
         setProgress()
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
-        userManager.token.asLiveData().observe(requireActivity(), {
-            token = it.toString()
-        })
+
 
         binding.changePass.setOnClickListener {
             val old: String = binding.etOld.text.toString().trim()
@@ -93,10 +92,9 @@ class ChangePassFragment : Fragment() {
                     TastyToast.INFO
                 )
             } else {
-                changePass(token, old, new)
+                changePass(Token(requireContext()).getToken(), old, new)
             }
         }
-
 
     }
 
@@ -114,6 +112,7 @@ class ChangePassFragment : Fragment() {
                             TastyToast.LENGTH_LONG,
                             TastyToast.SUCCESS
                         )
+                        activity?.onBackPressed()
                         binding.etOld.text=null
                         binding.etNew.text=null
                         binding.etConfirm.text=null

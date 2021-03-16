@@ -14,6 +14,7 @@ import com.example.a99hub.adapters.CGAdapter
 import com.example.a99hub.adapters.InPlayAdapter
 import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentCompleteGameBinding
 import com.example.a99hub.model.UGModel
 import com.example.a99hub.network.Api
@@ -30,7 +31,6 @@ class CompleteGameFragment : Fragment() {
     private var _binding: FragmentCompleteGameBinding? = null
     private val binding get() = _binding!!
     private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var userManager: UserManager
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var recyclerView: RecyclerView
     private lateinit var cgAdapter: CGAdapter
@@ -61,7 +61,6 @@ class CompleteGameFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        userManager = UserManager(requireContext())
         compositeDisposable = CompositeDisposable()
         setProgress()
         binding.btnBack.setOnClickListener {
@@ -78,12 +77,7 @@ class CompleteGameFragment : Fragment() {
             adapter = cgAdapter
         }
 
-
-
-        userManager.token.asLiveData().observe(requireActivity(), {
-            getGames(it.toString())
-        })
-
+        getGames(Token(requireContext()).getToken())
 
     }
 

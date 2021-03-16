@@ -18,6 +18,7 @@ import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.LimitManager
 import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.ActivityMainBinding
 import com.example.a99hub.network.Api
 import com.example.a99hub.network.SocketInstance
@@ -111,6 +112,8 @@ class MainActivity : AppCompatActivity() {
 //        } catch (e: Exception) {
 //            Toast.makeText(this, "" + e.message, Toast.LENGTH_SHORT).show()
 //        }
+
+
     }
 
     fun setProgress() {
@@ -184,7 +187,7 @@ class MainActivity : AppCompatActivity() {
                             response.body()?.let { limitManager.store(limit) }
                         }
                     } else {
-                       logout()
+                        logout()
                     }
 
                 }

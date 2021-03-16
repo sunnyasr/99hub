@@ -26,7 +26,6 @@ import retrofit2.Response
 class UpcomingGamesFragment : Fragment() {
     private var _binding: FragmentUpcomingGamesBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var ugAdapter: UGAdapter
     private lateinit var arraList: ArrayList<UGModel>
@@ -37,7 +36,6 @@ class UpcomingGamesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUpcomingGamesBinding.inflate(layoutInflater, container, false)
-
         return binding.root
     }
 
@@ -66,8 +64,6 @@ class UpcomingGamesFragment : Fragment() {
 
     fun getData() {
         kProgressHUD.show()
-
-
         Api.invoke().getAllComingGame().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.code() == 200) {
@@ -99,18 +95,13 @@ class UpcomingGamesFragment : Fragment() {
                         )
                         if (ugModel.getInactive().equals("1"))
                             arraList.add(ugModel)
-
                     }
-
                     ugAdapter.setData(arraList)
-
                 }
             }
-
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Toast.makeText(context, t.message, Toast.LENGTH_LONG).show()
             }
-
         })
     }
 

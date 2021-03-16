@@ -10,6 +10,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.data.dataStore.ProfileManager
 import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentProfileBinding
 import com.example.a99hub.network.Api
 import com.google.android.material.snackbar.Snackbar
@@ -26,7 +27,6 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var userManager: UserManager
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var profileManager: ProfileManager
     private lateinit var spinner: MaterialSpinner
@@ -39,16 +39,16 @@ class ProfileFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
-        userManager = activity?.let { UserManager(it.applicationContext) }!!
+
         profileManager = activity?.let { ProfileManager(it.applicationContext) }!!
         compositeDisposable = CompositeDisposable()
-        userManager.token.asLiveData().observe(requireActivity(), {
-            getProfile(it.toString())
-        })
+
+        getProfile(Token(requireContext()).getToken())
+
 
         spinner = binding.spinner
 
-        spinner.setItems("0", "1", "2", "3", "4","5")
+        spinner.setItems("0", "1", "2", "3", "4", "5")
         spinner.setOnItemSelectedListener { view, position, id, item ->
             Snackbar.make(
                 view,
