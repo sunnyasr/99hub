@@ -67,8 +67,10 @@ class UpcomingGamesFragment : Fragment() {
         Api.invoke().getAllComingGame().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.code() == 200) {
+
                     kProgressHUD.dismiss()
                     val res = response.body()?.string()
+
                     val data: JSONObject = JSONObject(res)
                     val events: JSONObject = data.getJSONObject("events")
                     val x: Iterator<*> = events.keys()

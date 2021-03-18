@@ -1,12 +1,14 @@
 package com.example.a99hub.common
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
-import android.view.Gravity
 import android.widget.*
 import androidx.annotation.NonNull
-import com.example.a99hub.R
+import com.example.a99hub.activities.LoginActivity
+import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.eventBus.BetEvent
+import com.sdsmdg.tastytoast.TastyToast
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONArray
 import org.json.JSONObject
@@ -14,6 +16,9 @@ import org.json.JSONTokener
 
 class Common(context: Context) {
     private var context: Context
+
+    val sessionError: String =
+        "Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 1 column 2 path \$"
 
     init {
         this.context = context
@@ -85,5 +90,28 @@ class Common(context: Context) {
         return result
     }
 
+
+    fun checkTokenExpiry(str: String): Boolean {
+        var result: Boolean = false
+        if (str.length == 40) {
+            result = true
+        }
+        return result
+    }
+
+    suspend fun logout() {
+        TastyToast.makeText(
+            context,
+            "Your session is expire",
+            TastyToast.LENGTH_LONG,
+            TastyToast.WARNING
+        )
+
+        LoginManager(context).setLogged(false)
+        val intent = Intent(context, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+
+    }
 
 }

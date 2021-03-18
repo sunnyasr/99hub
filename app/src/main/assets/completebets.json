@@ -1,0 +1,64 @@
+{
+  "bets": {
+    "1615984369542.12952963269253": {
+      "bet_amount": "2500",
+      "bet_type": 0,
+      "market_id": "123400014.3",
+      "size": "100",
+      "rate": "21",
+      "team": "",
+      "action": "0",
+      "created": 1615984369542,
+      "client_id": 2,
+      "transaction_reference": "1615984369542.12952963269253",
+      "transaction_amount": "2500.00",
+      "transaction_type": "0"
+    },
+    "1615984350005.16012328197922": {
+      "bet_amount": "1500",
+      "bet_type": 1,
+      "market_id": "1.123400014",
+      "rate": 20,
+      "team": "TEA",
+      "action": "1",
+      "created": 1615984350005,
+      "client_id": 2,
+      "transaction_reference": "1615984350005.16012328197922",
+      "transaction_amount": "1500.00",
+      "transaction_type": "0"
+    },
+    "1615984360327.15764831027169": {
+      "bet_amount": "2000",
+      "bet_type": 1,
+      "market_id": "1.123400014",
+      "rate": 22,
+      "team": "TEA",
+      "action": "0",
+      "created": 1615984360327,
+      "client_id": 2,
+      "transaction_reference": "1615984360327.15764831027169",
+      "transaction_amount": "2000.00",
+      "transaction_type": "1"
+    },
+    "1615984378933.64980276708986": {
+      "bet_amount": "1000",
+      "bet_type": 0,
+      "market_id": "123400014.3",
+      "size": "100",
+      "rate": "22",
+      "team": "",
+      "action": "1",
+      "created": 1615984378933,
+      "client_id": 2,
+      "transaction_reference": "1615984378933.64980276708986",
+      "transaction_amount": "1000.00",
+      "transaction_type": "0"
+    }
+  },
+  "result": {
+    "1": "TEB",
+    "0": {
+      "123400014.3": "21"
+    }
+  }
+}

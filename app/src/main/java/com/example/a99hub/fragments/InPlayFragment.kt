@@ -1,6 +1,5 @@
 package com.example.a99hub.fragments
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,14 +31,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class InPlayFragment : Fragment() {
     private var _binding: FragmentInPlayBinding? = null
     private val binding get() = _binding!!
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var recyclerView: RecyclerView
     private lateinit var inPLayAdapter: InPlayAdapter
-    private lateinit var arraList: ArrayList<UGModel>
+    private lateinit var arrayList: ArrayList<UGModel>
     private var navController: NavController? = null
     private lateinit var compositeDisposable: CompositeDisposable
 
@@ -48,7 +46,6 @@ class InPlayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentInPlayBinding.inflate(layoutInflater, container, false)
-
         return binding.root
     }
 
@@ -63,7 +60,7 @@ class InPlayFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
-        arraList = ArrayList()
+        arrayList = ArrayList()
         inPLayAdapter = InPlayAdapter(context, ArrayList<UGModel>())
         recyclerView = binding.recyclerView
         recyclerView.apply {
@@ -114,10 +111,10 @@ class InPlayFragment : Fragment() {
                                 jsonObject.getString("inactive")
                             )
 
-                            arraList.add(ugModel)
+                            arrayList.add(ugModel)
                         }
 
-                        inPLayAdapter.setData(arraList)
+                        inPLayAdapter.setData(arrayList)
 
                     } else {
                         Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show()

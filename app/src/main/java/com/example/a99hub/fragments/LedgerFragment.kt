@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.opengl.Visibility
+import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.Gravity
@@ -13,6 +14,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -45,7 +47,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.stream.Collectors
-
 
 class LedgerFragment : Fragment() {
 
@@ -98,214 +99,224 @@ class LedgerFragment : Fragment() {
         matchMarketList.clear()
         eventList.clear()
         sessionMarketList.clear()
-        Api.invoke().getLedger(token).enqueue(object : Callback<ResponseBody> {
-
-            @SuppressLint("NewApi")
+        Api().getLedger(token).enqueue(object : Callback<ResponseBody> {
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.code() == 200) {
-
-                    val data = JSONObject(response.body()?.string()!!)
                     kProgressHUD.dismiss()
-                    /*EVENTS*/
-                    if (Common(requireContext()).checkJSONObject(data.getString("events"))) {
-                        val events: JSONObject = data.getJSONObject("events")
-                        val x: Iterator<*> = events.keys()
-                        val jsonEventArray = JSONArray()
-                        while (x.hasNext()) {
-                            val key = x.next() as String
-                            jsonEventArray.put(events[key])
-                        }
+                    val data = JSONObject(response.body()?.string()!!)
 
-                        for (i in 1..jsonEventArray.length()) {
-                            val jsonObject = jsonEventArray.getJSONObject(i - 1)
-                            var winner: String = ""
-                            if (!jsonObject.getString("winner").equals("null"))
-                                winner = jsonObject.getString("winner")
-                            eventList.add(
-                                EventModel(
-                                    jsonObject.getString("event_id"),
-                                    jsonObject.getString("market_id"),
-                                    jsonObject.getString("long_name"),
-                                    jsonObject.getString("short_name"),
-                                    winner,
-                                    jsonObject.getString("start_time"),
+                    if (Common(requireContext()).checkTokenExpiry(data.toString())) {
+                        lifecycleScope.launch {
+                            Common(requireContext()).logout()
+                        }
+                    } else {
+                        /*EVENTS*/
+                        if (Common(requireContext()).checkJSONObject(data.getString("events"))) {
+                            val events: JSONObject = data.getJSONObject("events")
+                            val x: Iterator<*> = events.keys()
+                            val jsonEventArray = JSONArray()
+                            while (x.hasNext()) {
+                                val key = x.next() as String
+                                jsonEventArray.put(events[key])
+                            }
+
+                            for (i in 1..jsonEventArray.length()) {
+                                val jsonObject = jsonEventArray.getJSONObject(i - 1)
+                                var winner: String = ""
+                                if (!jsonObject.getString("winner").equals("null"))
+                                    winner = jsonObject.getString("winner")
+                                eventList.add(
+                                    EventModel(
+                                        jsonObject.getString("event_id"),
+                                        jsonObject.getString("market_id"),
+                                        jsonObject.getString("long_name"),
+                                        jsonObject.getString("short_name"),
+                                        winner,
+                                        jsonObject.getString("start_time"),
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
 
-                    /*SESSION MARKET*/
-                    if (Common(requireContext()).checkJSONObject(data.getString("session_markets"))) {
-                        val session_markets: JSONObject = data.getJSONObject("session_markets")
-                        val _x_session: Iterator<*> = session_markets.keys()
-                        val jsonSessionArray = JSONArray()
-                        while (_x_session.hasNext()) {
-                            val key = _x_session.next() as String
-                            jsonSessionArray.put(session_markets[key])
-                        }
-                        for (j in 1..jsonSessionArray.length()) {
-                            val sessionObject = jsonSessionArray.getJSONObject(j - 1)
-                            sessionMarketList.add(
-                                SessionMarketsModel(
-                                    sessionObject.getString("event_id"),
-                                    sessionObject.getString("transaction"),
-                                    sessionObject.getString("commission")
+                        /*SESSION MARKET*/
+                        if (Common(requireContext()).checkJSONObject(data.getString("session_markets"))) {
+                            val session_markets: JSONObject = data.getJSONObject("session_markets")
+                            val _x_session: Iterator<*> = session_markets.keys()
+                            val jsonSessionArray = JSONArray()
+                            while (_x_session.hasNext()) {
+                                val key = _x_session.next() as String
+                                jsonSessionArray.put(session_markets[key])
+                            }
+                            for (j in 1..jsonSessionArray.length()) {
+                                val sessionObject = jsonSessionArray.getJSONObject(j - 1)
+                                sessionMarketList.add(
+                                    SessionMarketsModel(
+                                        sessionObject.getString("event_id"),
+                                        sessionObject.getString("transaction"),
+                                        sessionObject.getString("commission")
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
 
-                    /*MATCH MARKET*/
-                    if (Common(requireContext()).checkJSONObject(data.getString("match_markets"))) {
-                        val match_markets: JSONObject = data.getJSONObject("match_markets")
-                        val _x_match: Iterator<*> = match_markets.keys()
-                        val jsonMatchArray = JSONArray()
-                        while (_x_match.hasNext()) {
-                            val key = _x_match.next() as String
-                            jsonMatchArray.put(match_markets[key])
-                        }
-                        for (i in 1..jsonMatchArray.length()) {
-                            val jsonObject = jsonMatchArray.getJSONObject(i - 1)
+                        /*MATCH MARKET*/
+                        if (Common(requireContext()).checkJSONObject(data.getString("match_markets"))) {
+                            val match_markets: JSONObject = data.getJSONObject("match_markets")
+                            val _x_match: Iterator<*> = match_markets.keys()
+                            val jsonMatchArray = JSONArray()
+                            while (_x_match.hasNext()) {
+                                val key = _x_match.next() as String
+                                jsonMatchArray.put(match_markets[key])
+                            }
+                            for (i in 1..jsonMatchArray.length()) {
+                                val jsonObject = jsonMatchArray.getJSONObject(i - 1)
 
-                            matchMarketList.add(
-                                MatchMarketsModel(
-                                    jsonObject.getString("event_id"),
-                                    jsonObject.getString("market_id"),
-                                    jsonObject.getString("transaction"),
-                                    jsonObject.getString("commission"),
+                                matchMarketList.add(
+                                    MatchMarketsModel(
+                                        jsonObject.getString("event_id"),
+                                        jsonObject.getString("market_id"),
+                                        jsonObject.getString("transaction"),
+                                        jsonObject.getString("commission"),
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
 
-
-                    val jsonSettlementArray = data.getJSONArray("settlement_list")
-
-                    for (s in 1..jsonSettlementArray.length()) {
-                        val settelment = jsonSettlementArray.getJSONObject(s - 1)
-                        var lost: String = "0"
-                        var won: String = "0"
-                        if (settelment.getString("type").equals("1")) {
-                            won = settelment.getString("amount").replace("-", "").toDouble().toInt()
-                                .toString()
-                        } else
-                            lost =
-                                settelment.getString("amount").replace("-", "").toDouble().toInt()
+                        /*Settlement*/
+                        val jsonSettlementArray = data.getJSONArray("settlement_list")
+                        for (s in 1..jsonSettlementArray.length()) {
+                            val settelment = jsonSettlementArray.getJSONObject(s - 1)
+                            var lost: String = "0"
+                            var won: String = "0"
+                            if (settelment.getString("type").equals("1")) {
+                                won = settelment.getString("amount").replace("-", "").toDouble()
+                                    .toInt()
                                     .toString()
+                            } else
+                                lost =
+                                    settelment.getString("amount").replace("-", "").toDouble()
+                                        .toInt()
+                                        .toString()
 
-                        arrayList.add(
-                            LedgerModel(
-                                "0",
-                                "0",
-                                "settlement " + settelment.getString("remark"),
-                                "settlement " + settelment.getString("remark"),
-                                "",
-                                settelment.getString("created"),
-                                settelment.getString("amount").replace("-", ""),
+                            arrayList.add(
+                                LedgerModel(
+                                    "0",
+                                    "0",
+                                    "settlement " + settelment.getString("remark"),
+                                    "settlement " + settelment.getString("remark"),
+                                    "",
+                                    settelment.getString("created"),
+                                    settelment.getString("amount").replace("-", ""),
 
-                                lost,
-                                won,
-                                settelment.getString("amount").replace("-", "")
+                                    lost,
+                                    won,
+                                    settelment.getString("amount").replace("-", "")
+                                )
                             )
-                        )
-                    }
-
-                    for (i in 1..eventList.size) {
-                        val jsonObject = eventList.get(i - 1)
-
-                        val smarket = sessionMarketList.stream().filter {
-                            it.getEventID().contains(jsonObject.getEventID())
-
-                        }.collect(Collectors.toList())
-                        val mmarket = matchMarketList.stream().filter {
-                            it.getEventID().contains(jsonObject.getEventID())
-
-                        }.collect(Collectors.toList())
-                        var winner: String = jsonObject.getWinner()
-                        val names = jsonObject.getLongName().split('v')
-                        for (name in names) {
-
-                            if (name.replace(" ", "").take(1).equals(winner.take(1))) {
-                                winner = name
-                            }
                         }
-                        var lost: String = "0"
-                        var won: String = "0"
-                        if (smarket.size != 0)
-                            if (smarket.get(0).getTransaction().toDouble() > 0) {
-                                won = smarket.get(0).getTransaction().replace("-", "").toDouble()
-                                    .toInt().toString()
-                            } else {
-                                lost = smarket.get(0).getTransaction().replace("-", "").toDouble()
-                                    .toInt().toString()
-                            }
-                        if (mmarket.size != 0) {
-                            if (mmarket.get(0).getTransaction().toDouble() > 0) {
-                                if (won.toInt() > 0)
-                                    won = (won.toDouble() + mmarket.get(0).getTransaction()
-                                        .replace("-", "")
-                                        .toDouble()).toInt().toString()
-                                else {
-                                    val temp = (mmarket.get(0).getTransaction()
-                                        .replace("-", "")
-                                        .toDouble() - lost.toDouble()).toInt()
-                                    if (temp > 0) {
-                                        won = temp.toString().replace("-", "")
-                                        lost = "0"
-                                    } else {
-                                        lost = temp.toString().replace("-", "")
-                                        won = "0"
-                                    }
-                                }
-                            } else {
-                                if (won.toInt() > 0) {
 
-                                    won = (won.toDouble() - mmarket.get(0).getTransaction()
-                                        .replace("-", "")
-                                        .toDouble()).toInt().toString()
-                                    if (won > lost) {
-                                        lost = "0"
-                                    } else {
-                                        won = "0"
+                        /*Final Ledger*/
+                        for (i in 1..eventList.size) {
+                            val jsonObject = eventList.get(i - 1)
+
+                            val smarket = sessionMarketList.stream().filter {
+                                it.getEventID().contains(jsonObject.getEventID())
+
+                            }.collect(Collectors.toList())
+                            val mmarket = matchMarketList.stream().filter {
+                                it.getEventID().contains(jsonObject.getEventID())
+
+                            }.collect(Collectors.toList())
+                            var winner: String = jsonObject.getWinner()
+                            val names = jsonObject.getLongName().split('v')
+                            for (name in names) {
+
+                                if (name.replace(" ", "").take(1).equals(winner.take(1))) {
+                                    winner = name
+                                }
+                            }
+                            var lost: String = "0"
+                            var won: String = "0"
+                            if (smarket.size != 0)
+                                if (smarket.get(0).getTransaction().toDouble() > 0) {
+                                    won =
+                                        smarket.get(0).getTransaction().replace("-", "").toDouble()
+                                            .toInt().toString()
+                                } else {
+                                    lost =
+                                        smarket.get(0).getTransaction().replace("-", "").toDouble()
+                                            .toInt().toString()
+                                }
+                            if (mmarket.size != 0) {
+                                if (mmarket.get(0).getTransaction().toDouble() > 0) {
+                                    if (won.toInt() > 0)
+                                        won = (won.toDouble() + mmarket.get(0).getTransaction()
+                                            .replace("-", "")
+                                            .toDouble()).toInt().toString()
+                                    else {
+                                        val temp = (mmarket.get(0).getTransaction()
+                                            .replace("-", "")
+                                            .toDouble() - lost.toDouble()).toInt()
+                                        if (temp > 0) {
+                                            won = temp.toString().replace("-", "")
+                                            lost = "0"
+                                        } else {
+                                            lost = temp.toString().replace("-", "")
+                                            won = "0"
+                                        }
                                     }
                                 } else {
-                                    lost = (lost.toDouble() + mmarket.get(0).getTransaction()
-                                        .replace("-", "")
-                                        .toDouble()).toInt().toString()
+                                    if (won.toInt() > 0) {
+
+                                        won = (won.toDouble() - mmarket.get(0).getTransaction()
+                                            .replace("-", "")
+                                            .toDouble()).toInt().toString()
+                                        if (won > lost) {
+                                            lost = "0"
+                                        } else {
+                                            won = "0"
+                                        }
+                                    } else {
+                                        lost = (lost.toDouble() + mmarket.get(0).getTransaction()
+                                            .replace("-", "")
+                                            .toDouble()).toInt().toString()
+                                    }
                                 }
+
                             }
 
+                            arrayList.add(
+                                LedgerModel(
+                                    jsonObject.getEventID(),
+                                    jsonObject.getMarketID(),
+                                    jsonObject.getLongName(),
+                                    jsonObject.getShortName(),
+                                    winner,
+                                    jsonObject.getStartTime(),
+                                    (won.toDouble().toInt() + lost.toDouble().toInt()).toString(),
+                                    lost,
+                                    won,
+                                    (won.toDouble().toInt() + lost.toDouble().toInt()).toString(),
+                                )
+                            )
                         }
 
-                        arrayList.add(
-                            LedgerModel(
-                                jsonObject.getEventID(),
-                                jsonObject.getMarketID(),
-                                jsonObject.getLongName(),
-                                jsonObject.getShortName(),
-                                winner,
-                                jsonObject.getStartTime(),
-                                (won.toDouble().toInt() + lost.toDouble().toInt()).toString(),
-                                lost,
-                                won,
-                                (won.toDouble().toInt() + lost.toDouble().toInt()).toString(),
-                            )
-                        )
-                    }
+                        /*Final List date sort*/
+                        arrayList.sortBy {
+                            it.getStartTime()
+                        }
+                        tl.removeAllViews()
 
-                    arrayList.sortBy {
-                        it.getStartTime()
-                    }
-                    tl.removeAllViews()
+                        if (arrayList.size > 0) {
+                            addHeaders()
+                            addData()
+                            binding.tvEmpty.visibility = GONE
+                        } else {
+                            binding.tvEmpty.visibility = VISIBLE
+                        }
 
-                    if (arrayList.size > 0) {
-                        addHeaders()
-                        addData()
-                        binding.tvEmpty.visibility = GONE
-                    } else {
-                        binding.tvEmpty.visibility = VISIBLE
                     }
-
                 }
             }
 

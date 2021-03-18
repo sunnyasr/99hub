@@ -68,12 +68,15 @@
     </fragment>
     <fragment
         android:id="@+id/completeGameFragment"
-        android:name="com.example.a99hub.fragments.CompleteGameFragment"
+        android:name="com.example.a99hub.fragments.CGFragment"
         android:label="fragment_complete_game"
         tools:layout="@layout/fragment_complete_game" >
         <action
             android:id="@+id/action_completeGameFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_completeGameFragment_to_CGDetailsFragment"
+            app:destination="@id/CGDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -119,5 +122,14 @@
         <action
             android:id="@+id/action_inplayDetailFragment_to_inPlayFragment"
             app:destination="@id/inPlayFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CGDetailsFragment"
+        android:name="com.example.a99hub.fragments.CGDetailsFragment"
+        android:label="fragment_c_g_details"
+        tools:layout="@layout/fragment_c_g_details" >
+        <action
+            android:id="@+id/action_CGDetailsFragment_to_completeGameFragment"
+            app:destination="@id/completeGameFragment" />
     </fragment>
 </navigation>

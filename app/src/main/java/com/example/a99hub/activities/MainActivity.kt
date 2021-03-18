@@ -97,6 +97,8 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Socket is not connected", Toast.LENGTH_SHORT).show()
         }
+
+
 //        mSocket!!.on(Socket.EVENT_CONNECT, Emitter.Listener {
 //            mSocket!!.emit("event_id", "30324990")
 //        });
@@ -161,43 +163,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getCoin(token: String) {
-        Api().getLimitCoins(token).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-                val data: String = response.body()?.string().toString()
-                if (response.isSuccessful && response.code() == 200) {
-
-                    if (!Common(this@MainActivity).checkJSONObject(data)) {
-
-                        val jsonArray = JSONArray(data)
-                        val obj = jsonArray.getJSONObject(0)
-                        val limit = LimitResponse(
-                            obj.getString("current"),
-                            obj.getString("locked"),
-                            obj.getString("hide_commission"),
-                            obj.getString("new"),
-                            obj.getString("username"),
-                            obj.getString("name"),
-                            obj.getString("valid"),
-                        )
-
-                        lifecycleScope.launch {
-                            response.body()?.let { limitManager.store(limit) }
-                        }
-                    } else {
-                        logout()
+        compositeDisposable.add(
+            Api().getLimitCoins(token).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    lifecycleScope.launch {
+                        limitManager.store(it.get(0))
                     }
+                }, {
+//                    if (it.message.equals(Common(this).sessionError)) {
+//                        lifecycleScope.launch {
+//                            Common(this@MainActivity).logout()
+//                        }
+//                    } else
+                        Toast.makeText(applicationContext, it.message.toString(), Toast.LENGTH_LONG)
+                            .show()
+                })
+        )
 
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(applicationContext, "[ERROR]" + t.message, Toast.LENGTH_LONG).show()
-            }
-
-        })
 
     }
 }

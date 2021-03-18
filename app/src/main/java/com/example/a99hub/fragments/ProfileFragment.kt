@@ -1,6 +1,7 @@
 package com.example.a99hub.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.ProfileManager
 import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.data.sharedprefrence.Token
@@ -42,7 +44,7 @@ class ProfileFragment : Fragment() {
 
         profileManager = activity?.let { ProfileManager(it.applicationContext) }!!
         compositeDisposable = CompositeDisposable()
-
+        setProgress()
         getProfile(Token(requireContext()).getToken())
 
 
@@ -73,7 +75,7 @@ class ProfileFragment : Fragment() {
 
 
 
-        setProgress()
+
         return binding.root
     }
 
@@ -105,7 +107,19 @@ class ProfileFragment : Fragment() {
                     }
                 }, {
                     kProgressHUD.dismiss()
-                    Toast.makeText(context, "" + it.message, Toast.LENGTH_LONG).show()
+                    if (it.message.equals(Common(requireContext()).sessionError)) {
+
+                        Log.d("ProfileError", it.message.toString())
+
+                        run {
+                            lifecycleScope.launch {
+                                Common(requireContext()).logout()
+                            }
+                        }
+
+                    } else {
+                        Toast.makeText(context, "" + it.message, Toast.LENGTH_LONG).show()
+                    }
                 })
         )
     }

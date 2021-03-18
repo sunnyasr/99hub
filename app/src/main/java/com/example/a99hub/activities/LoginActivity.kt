@@ -34,7 +34,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var token: Token
     private lateinit var kProgressHUD: KProgressHUD
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -103,7 +102,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 loginManager.setLogged(true)
                                 userManager.storeUser(response.body()!!)
                                 token.setToken(response.body()!!.token)
-                                Log.d("token_main",response.body()!!.token)
+                                Log.d("token_main", response.body()!!.token)
                                 val intent =
                                     Intent(this@LoginActivity, TermConditionActivity::class.java)
 //                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

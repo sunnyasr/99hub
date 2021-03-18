@@ -31,13 +31,19 @@ interface Api {
 
 
     @GET("limit")
-    fun getLimitCoins(@Query("token") token: String): Call<ResponseBody>
+    fun getLimitCoins(@Query("token") token: String): Observable<List<LimitResponse>>
 
     @GET("completed/sports")
     fun getCompletedGames(@Query("token") token: String): Observable<ResponseBody>
 
     @GET("limit")
     fun getBets(
+        @Query("token") token: String,
+        @Query("event_id") event_id: String
+    ): Observable<ResponseBody>
+
+    @GET("bets")
+    fun getCompletedBets(
         @Query("token") token: String,
         @Query("event_id") event_id: String
     ): Observable<ResponseBody>

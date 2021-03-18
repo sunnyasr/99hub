@@ -25,6 +25,7 @@ import com.example.a99hub.eventBus.BetEvent
 import com.example.a99hub.model.BetsModel
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.sdsmdg.tastytoast.TastyToast
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -47,8 +48,6 @@ class InplayDetailFragment : Fragment() {
     private lateinit var tbSessionBets: TableLayout
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var compositeDisposable: CompositeDisposable
-
-
     private lateinit var betsList: ArrayList<BetsModel>
     private lateinit var sessionBetsList: ArrayList<BetsModel>
 
@@ -106,96 +105,102 @@ class InplayDetailFragment : Fragment() {
             Api().getBets(token, eventID).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ res ->
-//                    Toast.makeText(context, res?.string().toString(), Toast.LENGTH_LONG).show()
-                    val data = JSONObject(res?.string())
-                    val tempBets: JSONObject = data.getJSONObject("0")
-                    val tempSessionBets: JSONObject = data.getJSONObject("1")
-                    val x: Iterator<*> = tempBets.keys()
-                    val x1: Iterator<*> = tempSessionBets.keys()
-                    val jsonSessionBetsArray = JSONArray()
-                    val jsonBetsArray = JSONArray()
-                    while (x.hasNext()) {
-                        val key = x.next() as String
+                    kProgressHUD.dismiss()
+                    if (Common(requireContext()).checkTokenExpiry(res?.string().toString())) {
+                        lifecycleScope.launch {
+                            Common(requireContext()).logout()
+                        }
+                    } else if (res?.string().toString().length > 51) {
+                        val data = JSONObject(res?.string())
+                        val tempBets: JSONObject = data.getJSONObject("0")
+                        val tempSessionBets: JSONObject = data.getJSONObject("1")
+                        val x: Iterator<*> = tempBets.keys()
+                        val x1: Iterator<*> = tempSessionBets.keys()
+                        val jsonSessionBetsArray = JSONArray()
+                        val jsonBetsArray = JSONArray()
+                        while (x.hasNext()) {
+                            val key = x.next() as String
 //                        Toast.makeText(context, key + " : " + eventID, Toast.LENGTH_LONG).show()
 //                        if (key.contains(eventID)) {
 //                            Toast.makeText(context, key + " : " + eventID, Toast.LENGTH_LONG).show()
 //                        }
-                        jsonBetsArray.put(tempBets[key])
-                    }
-                    while (x1.hasNext()) {
-                        val key = x1.next() as String
-                        jsonSessionBetsArray.put(tempSessionBets[key])
-                    }
+                            jsonBetsArray.put(tempBets[key])
+                        }
+                        while (x1.hasNext()) {
+                            val key = x1.next() as String
+                            jsonSessionBetsArray.put(tempSessionBets[key])
+                        }
 
-                    Log.d("bets_session", eventID)
+                        Log.d("bets_session", eventID)
 
-                    val jsonBetArray =
-                        jsonBetsArray.getJSONObject(0).getJSONArray("bets") as JSONArray
-                    val jsonSBetsArray =
-                        jsonSessionBetsArray.getJSONObject(0).getJSONArray("bets") as JSONArray
+                        val jsonBetArray =
+                            jsonBetsArray.getJSONObject(0).getJSONArray("bets") as JSONArray
+                        val jsonSBetsArray =
+                            jsonSessionBetsArray.getJSONObject(0).getJSONArray("bets") as JSONArray
 //                    Toast.makeText(context, jsonSBetsArray.toString(), Toast.LENGTH_LONG).show()
-                    for (i in 1..jsonBetArray.length()) {
-                        val jsonObject = jsonBetArray.getJSONObject(i - 1)
-                        betsList.add(
-                            BetsModel(
-                                jsonObject.getInt("notional_profit"),
-                                jsonObject.getString("ip"),
-                                "",
-                                jsonObject.getString("team"),
-                                "",
-                                jsonObject.getInt("notional_loss"),
-                                jsonObject.getInt("parent_id"),
-                                jsonObject.getInt("rate"),
-                                jsonObject.getString("action"),
-                                jsonObject.getString("created"),
-                                jsonObject.getString("amount"),
-                                jsonObject.getString("client_id"),
-                                jsonObject.getString("market_id"),
-                                jsonObject.getInt("ledger"),
-                                jsonObject.getInt("type"),
+                        for (i in 1..jsonBetArray.length()) {
+                            val jsonObject = jsonBetArray.getJSONObject(i - 1)
+                            betsList.add(
+                                BetsModel(
+                                    jsonObject.getInt("notional_profit"),
+                                    jsonObject.getString("ip"),
+                                    "",
+                                    jsonObject.getString("team"),
+                                    "",
+                                    jsonObject.getInt("notional_loss"),
+                                    jsonObject.getInt("parent_id"),
+                                    jsonObject.getInt("rate"),
+                                    jsonObject.getString("action"),
+                                    jsonObject.getString("created"),
+                                    jsonObject.getString("amount"),
+                                    jsonObject.getString("client_id"),
+                                    jsonObject.getString("market_id"),
+                                    jsonObject.getInt("ledger"),
+                                    jsonObject.getInt("type"),
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    tbBets.removeAllViews()
-                    addHeadersBets()
-                    addRowsBets()
+                        tbBets.removeAllViews()
+                        addHeadersBets()
+                        addRowsBets()
 
-                    val name: String =
-                        jsonSessionBetsArray.getJSONObject(0).getString("name")
-                    for (i in 1..jsonSBetsArray.length()) {
-                        val jsonObject = jsonSBetsArray.getJSONObject(i - 1)
-                        sessionBetsList.add(
-                            BetsModel(
-                                jsonObject.getInt("notional_profit"),
-                                jsonObject.getString("ip"),
-                                name,
-                                jsonObject.getString("team"),
-                                jsonObject.getString("size"),
-                                jsonObject.getInt("notional_loss"),
-                                jsonObject.getInt("parent_id"),
-                                jsonObject.getInt("rate"),
-                                jsonObject.getString("action"),
-                                jsonObject.getString("created"),
-                                jsonObject.getString("amount"),
-                                jsonObject.getString("client_id"),
-                                jsonObject.getString("market_id"),
-                                jsonObject.getInt("ledger"),
-                                jsonObject.getInt("type"),
+                        val name: String =
+                            jsonSessionBetsArray.getJSONObject(0).getString("name")
+                        for (i in 1..jsonSBetsArray.length()) {
+                            val jsonObject = jsonSBetsArray.getJSONObject(i - 1)
+                            sessionBetsList.add(
+                                BetsModel(
+                                    jsonObject.getInt("notional_profit"),
+                                    jsonObject.getString("ip"),
+                                    name,
+                                    jsonObject.getString("team"),
+                                    jsonObject.getString("size"),
+                                    jsonObject.getInt("notional_loss"),
+                                    jsonObject.getInt("parent_id"),
+                                    jsonObject.getInt("rate"),
+                                    jsonObject.getString("action"),
+                                    jsonObject.getString("created"),
+                                    jsonObject.getString("amount"),
+                                    jsonObject.getString("client_id"),
+                                    jsonObject.getString("market_id"),
+                                    jsonObject.getInt("ledger"),
+                                    jsonObject.getInt("type"),
+                                )
                             )
-                        )
+                        }
+                        tbSessionBets.removeAllViews()
+                        addHeadersSessionBets()
+                        addRowsSessionBets()
+
+
                     }
-                    tbSessionBets.removeAllViews()
-                    addHeadersSessionBets()
-                    addRowsSessionBets()
-
-                    kProgressHUD.dismiss()
-
                 }, {
                     kProgressHUD.dismiss()
                     Toast.makeText(context, "" + it.message, Toast.LENGTH_LONG).show()
                 })
         )
+
     }
 
     fun addHeaders() {

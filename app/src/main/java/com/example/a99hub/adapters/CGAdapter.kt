@@ -50,7 +50,9 @@ class CGAdapter(private val context: Context?, private var arrayList: ArrayList<
             .append(", ")
             .append(time)
 
-
+        holder.cardView.setOnClickListener {
+            EventBus.getDefault().postSticky(InPLayEvent(game))
+        }
 
     }
 
