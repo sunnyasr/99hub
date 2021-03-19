@@ -1,10 +1,16 @@
 package com.example.a99hub.model
 
-class UGModel(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.io.Serializable
+
+@Entity(tableName = "CGame")
+data class UGModel(
     private var sport_id: String,
     private var sport_name: String,
     private var sport_picture: String,
-    private var event_id: String,
+    @PrimaryKey
+    private var event_id: Int,
     private var market_id: String,
     private var long_name: String,
     private var short_name: String,
@@ -12,7 +18,7 @@ class UGModel(
     private var competition_name: String,
     private var display_picture: String,
     private var inactive: String
-) {
+) : Serializable {
     fun getSportID(): String {
         return sport_id
     }
@@ -29,12 +35,12 @@ class UGModel(
         this.sport_name = sport_name
     }
 
-    fun getEventID(): String {
+    fun getEventID(): Int {
         return event_id
     }
 
 
-    fun setEventID(event_id: String) {
+    fun setEventID(event_id: Int) {
         this.event_id = event_id
     }
 
@@ -53,7 +59,8 @@ class UGModel(
     fun setStartTime(start_time: String) {
         this.start_time = start_time
     }
-    fun getInactive():String {
+
+    fun getInactive(): String {
         return inactive
     }
 

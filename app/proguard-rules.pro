@@ -30,3 +30,5 @@
 -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
     <init>(java.lang.Throwable);
 }
+-dontwarn java.util.concurrent.Flow*
+-keep class io.reactivex.rxjava3.disposables.RunnableDisposable { <init>(...); }

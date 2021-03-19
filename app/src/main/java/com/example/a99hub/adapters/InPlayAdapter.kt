@@ -52,7 +52,7 @@ class InPlayAdapter(private val context: Context?, private var arrayList: ArrayL
             .append(time)
 
         holder.cardView.setOnClickListener {
-            EventBus.getDefault().postSticky(InPLayEvent(game))
+//            EventBus.getDefault().postSticky(InPLayEvent(game))
         }
 
 

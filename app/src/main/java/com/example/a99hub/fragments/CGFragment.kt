@@ -6,7 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -14,17 +15,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a99hub.R
 import com.example.a99hub.adapters.CGAdapter
-import com.example.a99hub.adapters.InPlayAdapter
 import com.example.a99hub.common.Common
-import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentCompleteGameBinding
 import com.example.a99hub.eventBus.InPLayEvent
 import com.example.a99hub.model.UGModel
+import com.example.a99hub.model.database.CompleteGame
 import com.example.a99hub.network.Api
+import com.example.a99hub.viewModel.CompleteGameViewModel
 import com.kaopiz.kprogresshud.KProgressHUD
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
@@ -34,7 +34,6 @@ import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.json.JSONObject
 
-
 class CGFragment : Fragment() {
     private var _binding: FragmentCompleteGameBinding? = null
     private val binding get() = _binding!!
@@ -42,8 +41,9 @@ class CGFragment : Fragment() {
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var recyclerView: RecyclerView
     private lateinit var cgAdapter: CGAdapter
-    private lateinit var arraList: ArrayList<UGModel>
+    private lateinit var arraList: ArrayList<CompleteGame>
     private var navController: NavController? = null
+    private lateinit var completeGameViewModel: CompleteGameViewModel
 
 
     override fun onCreateView(
@@ -70,6 +70,8 @@ class CGFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        completeGameViewModel = ViewModelProvider(this).get(CompleteGameViewModel::class.java)
+
         compositeDisposable = CompositeDisposable()
         navController = activity?.let {
             Navigation.findNavController(it, R.id.fragment)
@@ -82,19 +84,26 @@ class CGFragment : Fragment() {
         cgAdapter = CGAdapter(context, arraList)
         recyclerView = binding.recyclerView
 
-
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = cgAdapter
         }
 
+        completeGameViewModel.getCompleteGame(requireActivity())
+            ?.observe(requireActivity(), Observer {
+                if (it.size == 0)
+                    kProgressHUD.show()
+                else {
+                    kProgressHUD.dismiss()
+                    cgAdapter.setData(it as java.util.ArrayList<CompleteGame>)
+                }
+            })
         getGames(Token(requireContext()).getToken())
 
     }
 
     fun getGames(token: String) {
-        kProgressHUD.show()
         compositeDisposable.add(
             Api().getCompletedGames(token).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -111,14 +120,15 @@ class CGFragment : Fragment() {
                             jsonArray.put(events[key])
                         }
 
+                        completeGameViewModel.allDelete(requireContext())
                         for (i in 1..jsonArray.length()) {
 
                             val jsonObject = jsonArray.getJSONObject(i - 1)
-                            val ugModel = UGModel(
+                            val ugModel = CompleteGame(
                                 jsonObject.getString("sport_id"),
                                 jsonObject.getString("sport_name"),
                                 jsonObject.getString("sport_picture"),
-                                jsonObject.getString("event_id"),
+                                jsonObject.getInt("event_id"),
                                 jsonObject.getString("market_id"),
                                 jsonObject.getString("long_name"),
                                 jsonObject.getString("short_name"),
@@ -127,8 +137,8 @@ class CGFragment : Fragment() {
                                 jsonObject.getString("display_picture"),
                                 jsonObject.getString("inactive")
                             )
-
-                            arraList.add(ugModel)
+                            completeGameViewModel.insert(requireContext(), ugModel)
+//                            arraList.add(ugModel)
                         }
 
                         kProgressHUD.dismiss()
@@ -157,7 +167,7 @@ class CGFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEventClicked(inPLayEvent: InPLayEvent) {
         val bundle = Bundle()
-        bundle.putString("eventid", inPLayEvent.ugModel.getEventID())
+        bundle.putString("eventid", inPLayEvent.ugModel.event_id.toString())
         navController?.navigate(R.id.action_completeGameFragment_to_CGDetailsFragment, bundle)
     }
 }

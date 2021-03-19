@@ -36,6 +36,7 @@ import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.util.*
 import kotlin.text.StringBuilder
 
@@ -84,19 +85,19 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.profileFragment)
         }
         //Socket instance
-        val app: SocketInstance = application as SocketInstance
-        mSocket = app.getMSocket()
-//        //connecting socket
-        mSocket!!.connect()
-        val options = IO.Options()
-        options.reconnection = true //reconnection
-        options.forceNew = true
-//
-        if (mSocket?.connected()!!) {
-            Toast.makeText(this, "Socket is connected", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Socket is not connected", Toast.LENGTH_SHORT).show()
-        }
+//        val app: SocketInstance = application as SocketInstance
+//        mSocket = app.getMSocket()
+////        //connecting socket
+//        mSocket!!.connect()
+//        val options = IO.Options()
+//        options.reconnection = true //reconnection
+//        options.forceNew = true
+////
+//        if (mSocket?.connected()!!) {
+//            Toast.makeText(this, "Socket is connected", Toast.LENGTH_SHORT).show()
+//        } else {
+//            Toast.makeText(this, "Socket is not connected", Toast.LENGTH_SHORT).show()
+//        }
 
 
 //        mSocket!!.on(Socket.EVENT_CONNECT, Emitter.Listener {

@@ -86,7 +86,7 @@ class UpcomingGamesFragment : Fragment() {
                             jsonObject.getString("sport_id"),
                             jsonObject.getString("sport_name"),
                             jsonObject.getString("sport_picture"),
-                            jsonObject.getString("event_id"),
+                            jsonObject.getInt("event_id"),
                             jsonObject.getString("market_id"),
                             jsonObject.getString("long_name"),
                             jsonObject.getString("short_name"),

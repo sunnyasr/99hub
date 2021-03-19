@@ -101,7 +101,7 @@ class InPlayFragment : Fragment() {
                                 jsonObject.getString("sport_id"),
                                 jsonObject.getString("sport_name"),
                                 jsonObject.getString("sport_picture"),
-                                jsonObject.getString("event_id"),
+                                jsonObject.getInt("event_id"),
                                 jsonObject.getString("market_id"),
                                 jsonObject.getString("long_name"),
                                 jsonObject.getString("short_name"),
@@ -149,7 +149,7 @@ class InPlayFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEventClicked(inPLayEvent: InPLayEvent) {
         val bundle = Bundle()
-        bundle.putString("eventid", inPLayEvent.ugModel.getEventID())
+        bundle.putString("eventid", inPLayEvent.ugModel.event_id.toString())
         navController?.navigate(R.id.action_inPlayFragment_to_inplayDetailFragment, bundle)
     }
 }

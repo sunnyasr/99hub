@@ -2,21 +2,18 @@ package com.example.a99hub.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.a99hub.R
 import com.example.a99hub.common.Common
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentCGDetailsBinding
-import com.example.a99hub.model.BetsModel
 import com.example.a99hub.model.CGBetsModel
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
-import com.sdsmdg.tastytoast.TastyToast
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -71,47 +68,56 @@ class CGDetailsFragment : Fragment() {
             Api().getCompletedBets(token, eventID).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ res ->
-
+                    kProgressHUD.dismiss()
                     val data = JSONObject(res?.string())
-                    if (!Common(requireContext()).checkTokenExpiry(res?.string().toString())) {
-                        if (Common(requireContext()).checkJSONObject(data.getString("bets"))) {
-                            val betsTemp: JSONObject = data.getJSONObject("bets")
-                            val x: Iterator<*> = betsTemp.keys()
-                            val jsonBetsArray = JSONArray()
-                            while (x.hasNext()) {
-                                val key = x.next() as String
+                    if (Common(requireContext()).checkTokenExpiry(res?.string().toString())) {
+                        lifecycleScope.launch {
+                            Common(requireContext()).logout()
+                        }
+                    } else {
+//                        if (Common(requireContext()).checkJSONObject(data.getString("bets"))) {
+//                            val betsTemp: JSONObject = data.getJSONObject("bets")
+//                            val x: Iterator<*> = betsTemp.keys()
+//                            val jsonBetsArray = JSONArray()
+//                            while (x.hasNext()) {
+//                                val key = x.next() as String
+//
+//                                jsonBetsArray.put(betsTemp[key])
+//                            }
+//
+//                            for (i in 1..jsonBetsArray.length()) {
+//                                val jsonObject = jsonBetsArray.getJSONObject(i - 1)
+//                                betsList.add(
+//                                    CGBetsModel(
+//                                        jsonObject.getString("bet_amount"),
+//                                        jsonObject.getString("bet_type"),
+//                                        jsonObject.getString("market_id"),
+//                                        jsonObject.getString("rate"),
+//                                        jsonObject.getString("team"),
+//                                        jsonObject.getString("action"),
+//                                        jsonObject.getString("created"),
+//                                        jsonObject.getString("client_id"),
+//                                        jsonObject.getString("transaction_reference"),
+//                                        jsonObject.getString("transaction_amount"),
+//                                        jsonObject.getString("transaction_type"),
+//                                    )
+//                                )
+//                            }
+//                            Toast.makeText(
+//                                context,
+//                                "Success " + jsonBetsArray.length(),
+//                                Toast.LENGTH_LONG
+//                            )
+//                                .show()
+//
+//                        } else Toast.makeText(context, "No Found Record", Toast.LENGTH_LONG).show()
 
-                                jsonBetsArray.put(betsTemp[key])
-                            }
+                        val array = JSONObject(
+                            Common(requireContext()).loadJSONFromAsset("completebets.json")
+                        )
+                        Toast.makeText(context, array.toString(), Toast.LENGTH_LONG).show()
 
-                            for (i in 1..jsonBetsArray.length()) {
-                                val jsonObject = jsonBetsArray.getJSONObject(i - 1)
-                                betsList.add(
-                                    CGBetsModel(
-                                        jsonObject.getString("bet_amount"),
-                                        jsonObject.getString("bet_type"),
-                                        jsonObject.getString("market_id"),
-                                        jsonObject.getString("rate"),
-                                        jsonObject.getString("team"),
-                                        jsonObject.getString("action"),
-                                        jsonObject.getString("created"),
-                                        jsonObject.getString("client_id"),
-                                        jsonObject.getString("transaction_reference"),
-                                        jsonObject.getString("transaction_amount"),
-                                        jsonObject.getString("transaction_type"),
-                                    )
-                                )
-                            }
-                            Toast.makeText(
-                                context,
-                                "Success " + jsonBetsArray.length(),
-                                Toast.LENGTH_LONG
-                            )
-                                .show()
-
-                        } else Toast.makeText(context, "No Found Record", Toast.LENGTH_LONG).show()
-
-
+                    }
 //                    val x1: Iterator<*> = tempSessionBets.keys()
 //                    val jsonSessionBetsArray = JSONArray()
 //                    val jsonBetsArray = JSONArray()
@@ -168,23 +174,12 @@ class CGDetailsFragment : Fragment() {
 //                    addHeadersSessionBets()
 //                    addRowsSessionBets()
 
-                        kProgressHUD.dismiss()
 
-                    } else {
-                        TastyToast.makeText(
-                            context,
-                            "Your session is expire",
-                            TastyToast.LENGTH_LONG,
-                            TastyToast.WARNING
-                        )
-                        lifecycleScope.launch {
-                            Common(requireContext()).logout()
-                        }
-                    }
-                }, {
-                    kProgressHUD.dismiss()
-                    Toast.makeText(context, "" + it.message, Toast.LENGTH_LONG).show()
-                })
+                },
+                    {
+                        kProgressHUD.dismiss()
+                        Toast.makeText(context, "" + it.message, Toast.LENGTH_LONG).show()
+                    })
         )
     }
 

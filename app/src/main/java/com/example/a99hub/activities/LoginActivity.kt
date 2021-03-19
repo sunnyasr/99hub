@@ -14,6 +14,7 @@ import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.ActivityLoginBinding
 import com.example.a99hub.network.Api
+import com.example.a99hub.network.RetrofitClient
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.sdsmdg.tastytoast.TastyToast
 import kotlinx.coroutines.launch
@@ -102,6 +103,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 loginManager.setLogged(true)
                                 userManager.storeUser(response.body()!!)
                                 token.setToken(response.body()!!.token)
+                                token.setUsername(response.body()!!.username)
                                 Log.d("token_main", response.body()!!.token)
                                 val intent =
                                     Intent(this@LoginActivity, TermConditionActivity::class.java)

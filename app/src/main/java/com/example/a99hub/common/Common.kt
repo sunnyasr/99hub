@@ -13,6 +13,8 @@ import org.greenrobot.eventbus.EventBus
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
+import java.io.IOException
+import java.nio.charset.Charset
 
 class Common(context: Context) {
     private var context: Context
@@ -112,6 +114,24 @@ class Common(context: Context) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
 
+    }
+
+     fun loadJSONFromAsset(str:String): String {
+        val json: String?
+        try {
+            val inputStream = context.assets.open(str)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            val charset: Charset = Charsets.UTF_8
+            inputStream.read(buffer)
+            inputStream.close()
+            json = String(buffer, charset)
+        }
+        catch (ex: IOException) {
+            ex.printStackTrace()
+            return ""
+        }
+        return json
     }
 
 }

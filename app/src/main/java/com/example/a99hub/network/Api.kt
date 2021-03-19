@@ -1,6 +1,11 @@
 package com.example.a99hub.network
 
-import com.example.a99hub.model.UGModel
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.util.Log
+import com.squareup.okhttp.Cache
+import com.squareup.okhttp.OkHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.core.Observable
 import net.simplifiedcoding.data.responses.*
@@ -10,6 +15,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.*
+import java.io.File
+import java.io.IOException
 
 interface Api {
 
@@ -72,12 +79,7 @@ interface Api {
 
     companion object {
         operator fun invoke(): Api {
-            return Retrofit.Builder()
-                .baseUrl("https://bluexch.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .build()
-                .create()
+            return RetrofitClient().retrofit.create()
         }
     }
 }

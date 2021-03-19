@@ -1,5 +1,6 @@
 package com.example.a99hub.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.common.Common
@@ -14,7 +17,9 @@ import com.example.a99hub.data.dataStore.ProfileManager
 import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentProfileBinding
+import com.example.a99hub.model.database.Profile
 import com.example.a99hub.network.Api
+import com.example.a99hub.viewModel.ProfileViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -32,6 +37,7 @@ class ProfileFragment : Fragment() {
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var profileManager: ProfileManager
     private lateinit var spinner: MaterialSpinner
+    private lateinit var profileViewModel: ProfileViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,8 +51,6 @@ class ProfileFragment : Fragment() {
         profileManager = activity?.let { ProfileManager(it.applicationContext) }!!
         compositeDisposable = CompositeDisposable()
         setProgress()
-        getProfile(Token(requireContext()).getToken())
-
 
         spinner = binding.spinner
 
@@ -61,6 +65,8 @@ class ProfileFragment : Fragment() {
 
         profileManager.name.asLiveData().observe(requireActivity(), {
             binding.tvCname.text = it
+            if (it.equals(""))
+                kProgressHUD.show()
         })
         profileManager.username.asLiveData().observe(requireActivity(), {
             binding.tvCid.text = it
@@ -73,15 +79,23 @@ class ProfileFragment : Fragment() {
             binding.tvDoj.text = it
         })
 
-
-
-
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        profileViewModel.search(requireActivity(), Token(requireActivity()).getUsername())
+            ?.observe(requireActivity(), Observer {
+                if (it.isEmpty())
+                    getProfile(Token(requireContext()).getToken())
+            })
     }
 
     fun setProgress() {
@@ -94,7 +108,7 @@ class ProfileFragment : Fragment() {
     }
 
     fun getProfile(token: String) {
-        kProgressHUD.show()
+//        kProgressHUD.show()
         compositeDisposable.add(
             Api().getProfile(token).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -102,6 +116,16 @@ class ProfileFragment : Fragment() {
                     run {
                         lifecycleScope.launch {
                             profileManager.storeUser(res.get(0))
+                            profileViewModel.insert(
+                                requireContext(),
+                                Profile(
+                                    res.get(0).username,
+                                    res.get(0).name,
+                                    res.get(0).mobile,
+                                    res.get(0).created,
+                                    999
+                                )
+                            )
                             kProgressHUD.dismiss()
                         }
                     }
