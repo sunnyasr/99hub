@@ -8,8 +8,7 @@ import androidx.datastore.preferences.edit
 import androidx.datastore.preferences.preferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import net.simplifiedcoding.data.responses.LimitResponse
-import net.simplifiedcoding.data.responses.LoginResponse
+import com.example.a99hub.data.responses.LimitResponse
 
 class LimitManager(context: Context) {
 

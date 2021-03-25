@@ -6,17 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.lifecycle.asLiveData
-import com.example.a99hub.R
-import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentChangePassBinding
 import com.example.a99hub.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.sdsmdg.tastytoast.TastyToast
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers

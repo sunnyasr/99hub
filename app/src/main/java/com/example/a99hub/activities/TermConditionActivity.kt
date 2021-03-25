@@ -53,7 +53,6 @@ class TermConditionActivity : AppCompatActivity() {
         }
     }
 
-
     private fun popup() {
         val txtclose: ImageButton
 

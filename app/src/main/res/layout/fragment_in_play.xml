@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/off_white"
+    android:orientation="vertical"
+    android:padding="10dp"
     tools:context=".fragments.InPlayFragment">
 
     <Button
         android:id="@+id/btn_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+
         android:background="@drawable/back_main_menu_style"
         android:text="@string/back_to_main_menu"
         android:textColor="@color/white"

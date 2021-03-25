@@ -2,6 +2,7 @@ package com.example.a99hub.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.NetworkOnMainThreadException
 import android.os.StrictMode
 import android.text.TextUtils
 import android.util.Log
@@ -14,11 +15,10 @@ import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.ActivityLoginBinding
 import com.example.a99hub.network.Api
-import com.example.a99hub.network.RetrofitClient
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.sdsmdg.tastytoast.TastyToast
 import kotlinx.coroutines.launch
-import net.simplifiedcoding.data.responses.LoginResponse
+import com.example.a99hub.data.responses.LoginResponse
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,15 +39,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        try {
-            // JSON here
-        } catch (e2: JSONException) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace()
-        } catch (e: Exception) {
-            // TODO Auto-generated catch block
-            e.printStackTrace()
-        }
+//        try {
+//            // JSON here
+//        } catch (e2: JSONException) {
+//            // TODO Auto-generated catch block
+//            e2.printStackTrace()
+//        } catch (e: Exception) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace()
+//        }
         token = Token(this)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -67,7 +67,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun getIP(): String {
-        val ip = InetAddress.getLocalHost()
+        var ip: String = ""
+        try {
+            ip = InetAddress.getLocalHost().toString()
+        } catch (e: NetworkOnMainThreadException) {
+            Toast.makeText(applicationContext, e.message.toString(), Toast.LENGTH_LONG).show()
+        }
+        Toast.makeText(applicationContext, ip, Toast.LENGTH_LONG).show()
         return ip.toString().replace("localhost/", "")
     }
 
@@ -114,11 +120,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
 
                         } else {
-                            TastyToast.makeText(
+//                            TastyToast.makeText(
+//                                this@LoginActivity,
+//                                "Invalid Username/Password try again",
+//                                Toast.LENGTH_LONG, TastyToast.ERROR
+//                            )
+
+                            Toast.makeText(
                                 this@LoginActivity,
-                                "Invalid Username/Password try again",
-                                Toast.LENGTH_LONG, TastyToast.ERROR
-                            )
+                                response.body().toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
 
                     }

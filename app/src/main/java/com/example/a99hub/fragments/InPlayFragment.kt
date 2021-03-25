@@ -1,11 +1,14 @@
 package com.example.a99hub.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,21 +18,20 @@ import com.example.a99hub.adapters.InPlayAdapter
 import com.example.a99hub.common.Common
 import com.example.a99hub.databinding.FragmentInPlayBinding
 import com.example.a99hub.eventBus.InPLayEvent
-import com.example.a99hub.model.UGModel
+import com.example.a99hub.model.database.CompleteGame
+import com.example.a99hub.model.database.InPlayGame
 import com.example.a99hub.network.Api
+import com.example.a99hub.viewModel.InPlayGameViewModel
 import com.kaopiz.kprogresshud.KProgressHUD
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlin.random.Random
 
 class InPlayFragment : Fragment() {
     private var _binding: FragmentInPlayBinding? = null
@@ -37,20 +39,23 @@ class InPlayFragment : Fragment() {
     private lateinit var kProgressHUD: KProgressHUD
     private lateinit var recyclerView: RecyclerView
     private lateinit var inPLayAdapter: InPlayAdapter
-    private lateinit var arrayList: ArrayList<UGModel>
+    private lateinit var arrayList: ArrayList<InPlayGame>
     private var navController: NavController? = null
     private lateinit var compositeDisposable: CompositeDisposable
+    private lateinit var inPlayGameViewModel: InPlayGameViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentInPlayBinding.inflate(layoutInflater, container, false)
+        inPlayGameViewModel = ViewModelProvider(this).get(InPlayGameViewModel::class.java)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         compositeDisposable = CompositeDisposable()
         navController = activity?.let {
             Navigation.findNavController(it, R.id.fragment)
@@ -61,12 +66,22 @@ class InPlayFragment : Fragment() {
             activity?.onBackPressed()
         }
         arrayList = ArrayList()
-        inPLayAdapter = InPlayAdapter(context, ArrayList<UGModel>())
+        inPLayAdapter = InPlayAdapter(context, ArrayList<InPlayGame>())
         recyclerView = binding.recyclerView
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = inPLayAdapter
+        }
+
+        context?.let {
+            inPlayGameViewModel.getInPlayGame(it)
+                ?.observe(requireActivity(), Observer {
+                    if (it.size > 0) {
+                        kProgressHUD.dismiss()
+                        inPLayAdapter.setData(it as ArrayList<InPlayGame>)
+                    }
+                })
         }
         getData()
     }
@@ -76,7 +91,7 @@ class InPlayFragment : Fragment() {
         _binding = null
     }
 
-    fun getData() {
+    private fun getData() {
         kProgressHUD.show()
         compositeDisposable.add(
             Api().getInPlay().subscribeOn(Schedulers.io())
@@ -97,30 +112,30 @@ class InPlayFragment : Fragment() {
                         for (i in 1..jsonArray.length()) {
 
                             val jsonObject = jsonArray.getJSONObject(i - 1)
-                            val ugModel = UGModel(
+                            val ugModel = InPlayGame(
                                 jsonObject.getString("sport_id"),
                                 jsonObject.getString("sport_name"),
-                                jsonObject.getString("sport_picture"),
-                                jsonObject.getInt("event_id"),
+                                jsonObject.getString("event_id"),
                                 jsonObject.getString("market_id"),
                                 jsonObject.getString("long_name"),
                                 jsonObject.getString("short_name"),
                                 jsonObject.getString("start_time"),
-                                jsonObject.getString("competition_name"),
-                                jsonObject.getString("display_picture"),
                                 jsonObject.getString("inactive")
                             )
 
                             arrayList.add(ugModel)
                         }
+                        inPlayGameViewModel.allDelete(requireActivity())
 
+                        inPlayGameViewModel.insert(requireActivity(), arrayList)
                         inPLayAdapter.setData(arrayList)
 
                     } else {
                         Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show()
                     }
                 }, {
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+
+//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 })
         )
 

@@ -1,7 +1,6 @@
 package com.example.a99hub.fragments
 
 import android.annotation.SuppressLint
-import android.content.Intent.getIntent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.R
 import com.example.a99hub.common.Common

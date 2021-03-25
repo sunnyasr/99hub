@@ -8,7 +8,7 @@ import com.squareup.okhttp.Cache
 import com.squareup.okhttp.OkHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.core.Observable
-import net.simplifiedcoding.data.responses.*
+import com.example.a99hub.data.responses.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -79,7 +79,13 @@ interface Api {
 
     companion object {
         operator fun invoke(): Api {
-            return RetrofitClient().retrofit.create()
+
+            return Retrofit.Builder()
+                .baseUrl("https://bluexch.com/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build()
+                .create()
         }
     }
 }

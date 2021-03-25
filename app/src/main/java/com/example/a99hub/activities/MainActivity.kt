@@ -30,7 +30,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
-import net.simplifiedcoding.data.responses.LimitResponse
+import com.example.a99hub.data.responses.LimitResponse
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import retrofit2.Call
@@ -61,11 +61,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setProgress()
+
         limitManager = LimitManager(this)
         loginManager = LoginManager(this)
         userManager = UserManager(this)
         compositeDisposable = CompositeDisposable()
+        setProgress()
         userManager.username.asLiveData().observe(this, {
             binding.tvUsername.text = makeCapital(it.toString())
         })
@@ -120,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setProgress() {
-        kProgressHUD = KProgressHUD(this)
+        kProgressHUD = KProgressHUD(this@MainActivity)
             .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
             .setLabel("Please wait")
             .setCancellable(true)
@@ -172,11 +173,11 @@ class MainActivity : AppCompatActivity() {
                         limitManager.store(it.get(0))
                     }
                 }, {
-//                    if (it.message.equals(Common(this).sessionError)) {
-//                        lifecycleScope.launch {
-//                            Common(this@MainActivity).logout()
-//                        }
-//                    } else
+                    if (it.message.equals(Common(this).sessionError)) {
+                        lifecycleScope.launch {
+                            Common(this@MainActivity).logout()
+                        }
+                    } else
                         Toast.makeText(applicationContext, it.message.toString(), Toast.LENGTH_LONG)
                             .show()
                 })

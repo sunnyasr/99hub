@@ -10,7 +10,7 @@ import com.example.a99hub.model.database.CompleteGame
 interface CGDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(note: CompleteGame)
+    suspend fun insert(note: ArrayList<CompleteGame>)
 
     @Query("SELECT * FROM CGame")
     fun getCompleteGame(): LiveData<List<CompleteGame>>

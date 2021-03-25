@@ -22,7 +22,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -38,8 +38,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/crick" />
 
                 <TextView
@@ -48,14 +48,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/in_play"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -71,8 +71,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/all_game" />
 
                 <TextView
@@ -82,7 +82,7 @@
 
                     android:text="@string/upcoming_game"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -97,7 +97,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -113,8 +113,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/cg1" />
 
                 <TextView
@@ -124,7 +124,7 @@
 
                     android:text="@string/complete_games"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
 
 
             </LinearLayout>
@@ -133,7 +133,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -149,8 +149,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/profile" />
 
                 <TextView
@@ -159,7 +159,7 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/profile"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -174,7 +174,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -190,8 +190,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/cl" />
 
                 <TextView
@@ -200,7 +200,7 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/my_ledger"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
 
 
             </LinearLayout>
@@ -209,7 +209,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -225,8 +225,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/cp" />
 
                 <TextView
@@ -235,7 +235,7 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/change_password"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -250,7 +250,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -266,8 +266,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/og" />
 
                 <TextView
@@ -276,7 +276,7 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/old_games"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
 
 
             </LinearLayout>
@@ -285,7 +285,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -301,8 +301,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:src="@drawable/ol" />
 
                 <TextView
@@ -311,7 +311,7 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/old_ledger"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="34sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>

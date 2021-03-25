@@ -1,6 +1,7 @@
 package com.example.a99hub.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,6 @@ import com.example.a99hub.common.Common
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentCompleteGameBinding
 import com.example.a99hub.eventBus.InPLayEvent
-import com.example.a99hub.model.UGModel
 import com.example.a99hub.model.database.CompleteGame
 import com.example.a99hub.network.Api
 import com.example.a99hub.viewModel.CompleteGameViewModel
@@ -51,6 +51,7 @@ class CGFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCompleteGameBinding.inflate(layoutInflater, container, false)
+        completeGameViewModel = ViewModelProvider(this).get(CompleteGameViewModel::class.java)
         return binding.root
     }
 
@@ -70,8 +71,6 @@ class CGFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        completeGameViewModel = ViewModelProvider(this).get(CompleteGameViewModel::class.java)
-
         compositeDisposable = CompositeDisposable()
         navController = activity?.let {
             Navigation.findNavController(it, R.id.fragment)
@@ -90,20 +89,21 @@ class CGFragment : Fragment() {
             adapter = cgAdapter
         }
 
-        completeGameViewModel.getCompleteGame(requireActivity())
-            ?.observe(requireActivity(), Observer {
-                if (it.size == 0)
-                    kProgressHUD.show()
-                else {
-                    kProgressHUD.dismiss()
-                    cgAdapter.setData(it as java.util.ArrayList<CompleteGame>)
-                }
-            })
+        context?.let {
+            completeGameViewModel.getCompleteGame(it)
+                ?.observe(requireActivity(), Observer {
+                    if (it.size > 0) {
+                        kProgressHUD.dismiss()
+                        cgAdapter.setData(it as ArrayList<CompleteGame>)
+                    }
+                })
+        }
         getGames(Token(requireContext()).getToken())
 
     }
 
     fun getGames(token: String) {
+        kProgressHUD.show()
         compositeDisposable.add(
             Api().getCompletedGames(token).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,7 +120,6 @@ class CGFragment : Fragment() {
                             jsonArray.put(events[key])
                         }
 
-                        completeGameViewModel.allDelete(requireContext())
                         for (i in 1..jsonArray.length()) {
 
                             val jsonObject = jsonArray.getJSONObject(i - 1)
@@ -128,7 +127,7 @@ class CGFragment : Fragment() {
                                 jsonObject.getString("sport_id"),
                                 jsonObject.getString("sport_name"),
                                 jsonObject.getString("sport_picture"),
-                                jsonObject.getInt("event_id"),
+                                jsonObject.getString("event_id"),
                                 jsonObject.getString("market_id"),
                                 jsonObject.getString("long_name"),
                                 jsonObject.getString("short_name"),
@@ -137,9 +136,11 @@ class CGFragment : Fragment() {
                                 jsonObject.getString("display_picture"),
                                 jsonObject.getString("inactive")
                             )
-                            completeGameViewModel.insert(requireContext(), ugModel)
-//                            arraList.add(ugModel)
+
+                            arraList.add(ugModel)
                         }
+                        completeGameViewModel.allDelete(requireContext())
+                        completeGameViewModel.insert(requireContext(), arraList)
 
                         kProgressHUD.dismiss()
                         cgAdapter.setData(arraList)
@@ -149,7 +150,12 @@ class CGFragment : Fragment() {
                         }
                     }
                 }, {
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    try {
+                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    } catch (e: Exception) {
+                        Log.d("CGFragment", e.message.toString())
+                    }
+
                 })
         )
     }

@@ -11,7 +11,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a99hub.R
 import com.example.a99hub.eventBus.InPLayEvent
-import com.example.a99hub.model.UGModel
 import com.example.a99hub.model.database.CompleteGame
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat

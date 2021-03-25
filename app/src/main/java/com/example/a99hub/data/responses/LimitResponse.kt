@@ -1,4 +1,4 @@
-package net.simplifiedcoding.data.responses
+package com.example.a99hub.data.responses
 
 data  class LimitResponse(
     val current: String,

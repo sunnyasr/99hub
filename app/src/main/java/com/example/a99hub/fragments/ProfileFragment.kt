@@ -1,6 +1,5 @@
 package com.example.a99hub.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.common.Common
 import com.example.a99hub.data.dataStore.ProfileManager
-import com.example.a99hub.data.dataStore.UserManager
 import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentProfileBinding
 import com.example.a99hub.model.database.Profile

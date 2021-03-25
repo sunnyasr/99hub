@@ -7,14 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a99hub.R
-import com.example.a99hub.model.UGModel
+import com.example.a99hub.model.database.InPlayGame
+import com.example.a99hub.model.database.UpcomingGame
 import java.text.SimpleDateFormat
 import java.util.*
 
-class UGAdapter(private val context: Context?, private var arrayList: ArrayList<UGModel>) :
+class UGAdapter(private val context: Context?, private var arrayList: ArrayList<UpcomingGame>) :
     RecyclerView.Adapter<UGAdapter.UGViewHolder>() {
 
     inner class UGViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,13 +34,13 @@ class UGAdapter(private val context: Context?, private var arrayList: ArrayList<
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: UGViewHolder, position: Int) {
         val game = arrayList[position]
-        holder.team.text = game.getLongName()
-        holder.date.text = game.getStartTime()
+        holder.team.text = game.long_name
+        holder.date.text = game.start_time
         holder.declared.text = StringBuilder().append( "Declared").append(" : ").append("NO")
 
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val dateFormat = SimpleDateFormat("hh:mm a")
-        val date = format.parse(game.getStartTime())
+        val date = format.parse(game.start_time)
         val time = dateFormat.format(date).toString()
 
         holder.date.text = StringBuilder().append(DateFormat.format("MMM", date))
@@ -54,7 +54,7 @@ class UGAdapter(private val context: Context?, private var arrayList: ArrayList<
 
     override fun getItemCount(): Int = arrayList.size
 
-    fun setData(arrayList: ArrayList<UGModel>) {
+    fun setData(arrayList: ArrayList<UpcomingGame>) {
         this.arrayList = arrayList
         notifyDataSetChanged()
     }

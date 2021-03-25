@@ -3,12 +3,12 @@ package com.example.a99hub.repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import com.example.a99hub.database.ProfileDatabase
-import com.example.a99hub.model.database.CompleteGame
+import com.example.a99hub.model.database.InPlayGame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
-class CompleteGameRepository {
+class InPlayGameRepository {
 
     companion object {
         private var noteDatabase: ProfileDatabase? = null
@@ -17,24 +17,24 @@ class CompleteGameRepository {
             return ProfileDatabase.getInstance(context)
         }
 
-        fun insert(context: Context, note: ArrayList<CompleteGame>) {
+        fun insert(context: Context, note: ArrayList<InPlayGame>) {
             noteDatabase = initialiseDB(context)
 
             CoroutineScope(IO).launch {
-                noteDatabase?.getCGDao()?.insert(note)
+                noteDatabase?.getInPlayDao()?.insert(note)
             }
         }
 
-        fun getCompleteGame(context: Context): LiveData<List<CompleteGame>>? {
+        fun getInPlayGame(context: Context): LiveData<List<InPlayGame>>? {
             noteDatabase = initialiseDB(context)
-            return noteDatabase?.getCGDao()?.getCompleteGame()
+            return noteDatabase?.getInPlayDao()?.getInPlayGame()
         }
 
-        fun update(context: Context, note: CompleteGame) {
+        fun update(context: Context, note: InPlayGame) {
             noteDatabase = initialiseDB(context)
 
             CoroutineScope(IO).launch {
-                noteDatabase?.getCGDao()?.update(note)
+                noteDatabase?.getInPlayDao()?.update(note)
             }
         }
 
@@ -43,17 +43,17 @@ class CompleteGameRepository {
 //            return noteDatabase?.getDao()?.search(data)
 //        }
 
-        fun delete(context: Context, note: CompleteGame) {
+        fun delete(context: Context, note: InPlayGame) {
             noteDatabase = initialiseDB(context)
             CoroutineScope(IO).launch {
-                noteDatabase?.getCGDao()?.delete(note)
+                noteDatabase?.getInPlayDao()?.delete(note)
             }
         }
 
         fun allDelete(context: Context) {
             noteDatabase = initialiseDB(context)
             CoroutineScope(IO).launch {
-                noteDatabase?.getCGDao()?.allDelete()
+                noteDatabase?.getInPlayDao()?.allDelete()
             }
         }
 

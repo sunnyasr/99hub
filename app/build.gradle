@@ -42,13 +42,14 @@ android {
         abortOnError false
     }
 
-//    packagingOptions {
+    packagingOptions {
+        exclude "DebugProbesKt.bin"
 //        pickFirst 'META-INF/kotlinx-io.kotlin_module'
 //        pickFirst 'META-INF/atomicfu.kotlin_module'
 //        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
 //        pickFirst 'META-INF/lifecycle-livedata-ktx_release.kotlin_module'
 //
-//    }
+    }
 }
 
 dependencies {

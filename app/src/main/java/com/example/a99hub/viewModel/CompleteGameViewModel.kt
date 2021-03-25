@@ -2,14 +2,15 @@ package com.example.a99hub.viewModel
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.a99hub.model.UGModel
+import com.example.a99hub.model.database.InPlayGame
 import com.example.a99hub.model.database.CompleteGame
 import com.example.a99hub.repository.CompleteGameRepository
 
 class CompleteGameViewModel : ViewModel() {
 
-    fun insert(context: Context, profile: CompleteGame) {
+    fun insert(context: Context, profile: ArrayList<CompleteGame>) {
         CompleteGameRepository.insert(context, profile)
     }
 
@@ -32,4 +33,6 @@ class CompleteGameViewModel : ViewModel() {
     fun allDelete(context: Context) {
         CompleteGameRepository.allDelete(context)
     }
+
+
 }

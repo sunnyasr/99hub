@@ -7,17 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a99hub.R
-import com.example.a99hub.eventBus.InPLayEvent
-import com.example.a99hub.model.UGModel
-import org.greenrobot.eventbus.EventBus
+import com.example.a99hub.model.database.InPlayGame
 import java.text.SimpleDateFormat
 import java.util.*
 
-class InPlayAdapter(private val context: Context?, private var arrayList: ArrayList<UGModel>) :
+class InPlayAdapter(private val context: Context?, private var arrayList: ArrayList<InPlayGame>) :
     RecyclerView.Adapter<InPlayAdapter.InPlayViewHolder>() {
 
     inner class InPlayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -37,12 +34,12 @@ class InPlayAdapter(private val context: Context?, private var arrayList: ArrayL
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: InPlayViewHolder, position: Int) {
         val game = arrayList[position]
-        holder.team.text = game.getLongName()
+        holder.team.text = game.long_name
 
 
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val dateFormat = SimpleDateFormat("hh:mm a")
-        val date = format.parse(game.getStartTime())
+        val date = format.parse(game.start_time)
         val time = dateFormat.format(date).toString()
 
         holder.date.text = StringBuilder().append(DateFormat.format("MMM", date))
@@ -60,7 +57,7 @@ class InPlayAdapter(private val context: Context?, private var arrayList: ArrayL
 
     override fun getItemCount(): Int = arrayList.size
 
-    fun setData(arrayList: ArrayList<UGModel>) {
+    fun setData(arrayList: ArrayList<InPlayGame>) {
         this.arrayList = arrayList
         notifyDataSetChanged()
     }
