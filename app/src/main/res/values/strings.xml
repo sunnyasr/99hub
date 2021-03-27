@@ -37,5 +37,8 @@
     <string name="cnt">Continue</string>
     <string name="back_to_in_play">Back To In Play Games</string>
     <string name="no_ledger">Nothing In Your Ledger !</string>
+    <string name="back_to_comp_game">Back To Complete Game</string>
+    <string name="session_bet">Session Bet(s)</string>
+    <string name="match_bet">Match Bet(s)</string>
 
 </resources>

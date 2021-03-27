@@ -172,8 +172,13 @@ class CGFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEventClicked(inPLayEvent: InPLayEvent) {
+
+        val names = inPLayEvent.ugModel.short_name.split("v")
         val bundle = Bundle()
-        bundle.putString("eventid", inPLayEvent.ugModel.event_id.toString())
+        bundle.putString("eventid", inPLayEvent.ugModel.event_id)
+        bundle.putString("team1", names.get(0))
+        bundle.putString("team2", names.get(1))
+        Log.d("CGDetails", inPLayEvent.ugModel.toString())
         navController?.navigate(R.id.action_completeGameFragment_to_CGDetailsFragment, bundle)
     }
 }

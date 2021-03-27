@@ -47,7 +47,6 @@ class ProfileManager(context: Context) {
                 preferences[USERNAME_KEY] ?: ""
             }
 
-
     val mobile: Flow<String>
         get() = dataStore.data
             .map { preferences ->
