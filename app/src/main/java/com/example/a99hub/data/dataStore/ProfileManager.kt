@@ -9,8 +9,9 @@ import androidx.datastore.preferences.preferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import com.example.a99hub.data.responses.ProfileResponse
+import javax.inject.Inject
 
-class ProfileManager(context: Context) {
+class ProfileManager @Inject constructor(context: Context) {
 
     private val applicationContext = context.applicationContext
     private val dataStore: DataStore<Preferences> = applicationContext.createDataStore(

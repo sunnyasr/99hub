@@ -17,5 +17,7 @@ data class CompleteGame(
     val start_time: String,
     val competition_name: String,
     val display_picture: String,
-    val inactive: String
-) : Serializable 
+    val inactive: String,
+    val score_id: String,
+    val livetv: String
+) : Serializable

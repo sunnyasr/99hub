@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/off_white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.OldLedgerFragment">
+    tools:context=".ui.oldledger.OldLedgerFragment">
 
     <Button
         android:id="@+id/btn_back"

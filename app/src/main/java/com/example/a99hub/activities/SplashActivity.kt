@@ -1,30 +1,36 @@
 package com.example.a99hub.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
 import androidx.lifecycle.asLiveData
 import com.example.a99hub.R
-import com.example.a99hub.data.dataStore.LoginManager
+import com.example.a99hub.data.dataStore.UserManager
+import com.example.a99hub.ui.auth.LoginActivity
+import com.example.a99hub.ui.home.HomeActivity
+import com.example.a99hub.ui.utils.startNewActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
-    private lateinit var loginManager: LoginManager
+
+    @Inject
+    lateinit var userManager: UserManager
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        loginManager = LoginManager(this)
 
-        loginManager.isLogged.asLiveData().observe(this, {
+        userManager.token.asLiveData().observe(this, {
             Handler(Looper.myLooper()!!).postDelayed({
-                if (it == true)
-                    startActivity(Intent(applicationContext, MainActivity::class.java))
-                else
-                    startActivity(Intent(applicationContext, LoginActivity::class.java))
-                finish()
-            }, 200)
+
+                val activity =
+                    if (it == null) LoginActivity::class.java else HomeActivity::class.java
+                startNewActivity(activity)
+            }, 1000)
         })
 
 

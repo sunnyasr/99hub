@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    tools:context=".fragments.HomeFragment">
+    tools:context=".ui.home.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout

@@ -3,7 +3,6 @@ package com.example.a99hub.fragments
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -14,7 +13,6 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.a99hub.R
@@ -23,7 +21,7 @@ import com.example.a99hub.data.sharedprefrence.Token
 import com.example.a99hub.databinding.FragmentCGDetailsBinding
 import com.example.a99hub.model.CGBetsModel
 import com.example.a99hub.model.CGResultModel
-import com.example.a99hub.network.Api
+import com.example.a99hub.data.network.Api
 import com.kaopiz.kprogresshud.KProgressHUD
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -75,6 +73,11 @@ class CGDetailsFragment : Fragment() {
         tbSession = binding.tableSession
         tvMatchHead = binding.tvMatchBetsHead
         tvSessionHead = binding.tvSessionBetsHead
+
+        binding.tvTeamFname.text = StringBuilder().append( arguments?.getString("eventid").toString()).append("\n")
+            .append(arguments?.getString("long_name").toString())
+            .append("\n")
+            .append(arguments?.getString("start_time").toString())
 
         getBets(Token(requireContext()).getToken(), arguments?.getString("eventid").toString())
     }

@@ -2,15 +2,13 @@ package com.example.a99hub.data.dataStore
 
 import android.content.Context
 import androidx.datastore.DataStore
-import androidx.datastore.preferences.Preferences
-import androidx.datastore.preferences.createDataStore
-import androidx.datastore.preferences.edit
-import androidx.datastore.preferences.preferencesKey
+import androidx.datastore.preferences.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import com.example.a99hub.data.responses.LimitResponse
+import javax.inject.Inject
 
-class LimitManager(context: Context) {
+class LimitManager @Inject constructor(context: Context) {
 
     private val applicationContext = context.applicationContext
     private val dataStore: DataStore<Preferences> = applicationContext.createDataStore(
@@ -44,5 +42,13 @@ class LimitManager(context: Context) {
             .map { preferences ->
                 preferences[LIMIT_KEY] ?: "0"
             }
+
+
+    suspend fun clear() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
 
 }

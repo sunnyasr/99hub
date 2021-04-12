@@ -5,7 +5,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.widget.*
 import androidx.annotation.NonNull
-import com.example.a99hub.activities.LoginActivity
+import com.example.a99hub.ui.auth.LoginActivity
 import com.example.a99hub.data.dataStore.LoginManager
 import com.example.a99hub.eventBus.BetEvent
 import com.sdsmdg.tastytoast.TastyToast

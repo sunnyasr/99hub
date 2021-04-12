@@ -41,7 +41,7 @@
             android:id="@+id/tv_match_bets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Match Bets : Dummy"
+            android:text="Match Bets : 0"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -50,7 +50,7 @@
             android:id="@+id/tv_session_bets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Session Bets : Dummy"
+            android:text="Session Bets : 0"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -59,7 +59,7 @@
             android:id="@+id/tv_declared"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Declared : Dummy"
+            android:text="Declared : Yes"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />

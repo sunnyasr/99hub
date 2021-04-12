@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.a99hub.fragments.HomeFragment"
+        android:name="com.example.a99hub.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/changePassFragment"
-        android:name="com.example.a99hub.fragments.ChangePassFragment"
+        android:name="com.example.a99hub.ui.changepassword.ChangePassFragment"
         android:label="fragment_change_pass"
         tools:layout="@layout/fragment_change_pass" >
         <action
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/inPlayFragment"
-        android:name="com.example.a99hub.fragments.InPlayFragment"
+        android:name="com.example.a99hub.ui.inplay.InPlayFragment"
         android:label="fragment_in_play"
         tools:layout="@layout/fragment_in_play" >
         <action
@@ -59,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/upcomingGamesFragment"
-        android:name="com.example.a99hub.fragments.UpcomingGamesFragment"
+        android:name="com.example.a99hub.ui.ugame.UGamesFragment"
         android:label="fragment_upcoming_games"
         tools:layout="@layout/fragment_upcoming_games" >
         <action
@@ -68,7 +68,7 @@
     </fragment>
     <fragment
         android:id="@+id/completeGameFragment"
-        android:name="com.example.a99hub.fragments.CGFragment"
+        android:name="com.example.a99hub.ui.cgame.CGFragment"
         android:label="fragment_complete_game"
         tools:layout="@layout/fragment_complete_game" >
         <action
@@ -80,7 +80,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.a99hub.fragments.ProfileFragment"
+        android:name="com.example.a99hub.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -89,7 +89,7 @@
     </fragment>
     <fragment
         android:id="@+id/ledgerFragment"
-        android:name="com.example.a99hub.fragments.LedgerFragment"
+        android:name="com.example.a99hub.ui.ledger.LedgerFragment"
         android:label="fragment_ledger"
         tools:layout="@layout/fragment_ledger" >
         <action
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/oldGameFragment"
-        android:name="com.example.a99hub.fragments.OldGameFragment"
+        android:name="com.example.a99hub.ui.oldgame.OldGameFragment"
         android:label="fragment_old_game"
         tools:layout="@layout/fragment_old_game" >
         <action
@@ -107,7 +107,7 @@
     </fragment>
     <fragment
         android:id="@+id/oldLedgerFragment"
-        android:name="com.example.a99hub.fragments.OldLedgerFragment"
+        android:name="com.example.a99hub.ui.oldledger.OldLedgerFragment"
         android:label="fragment_old_ledger"
         tools:layout="@layout/fragment_old_ledger" >
         <action

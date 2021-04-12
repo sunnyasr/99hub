@@ -31,6 +31,24 @@
                 android:textStyle="bold"
                 app:backgroundTint="@null" />
 
+
+            <TextView
+
+                android:id="@+id/tv_team_fname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/red"
+                android:gravity="center"
+                android:padding="12dp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@null" />
+
+
+
+
             <TextView
                 android:visibility="gone"
                 android:id="@+id/tv_match_bets_head"

@@ -2,15 +2,13 @@ package com.example.a99hub.data.dataStore
 
 import android.content.Context
 import androidx.datastore.DataStore
-import androidx.datastore.preferences.Preferences
-import androidx.datastore.preferences.createDataStore
-import androidx.datastore.preferences.edit
-import androidx.datastore.preferences.preferencesKey
+import androidx.datastore.preferences.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import com.example.a99hub.data.responses.LoginResponse
+import javax.inject.Inject
 
-class UserManager(context: Context) {
+class UserManager @Inject constructor(context: Context) {
 
     private val applicationContext = context.applicationContext
     private val dataStore: DataStore<Preferences> = applicationContext.createDataStore(
@@ -35,10 +33,17 @@ class UserManager(context: Context) {
         }
     }
 
-    val token: Flow<String>
+    suspend fun clear() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
+
+    val token: Flow<String?>
         get() = dataStore.data
             .map { preferences ->
-                preferences[TOKEN_KEY] ?: ""
+                preferences[TOKEN_KEY]
             }
 
     val username: Flow<String>
