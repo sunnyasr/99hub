@@ -125,7 +125,7 @@
     </fragment>
     <fragment
         android:id="@+id/CGDetailsFragment"
-        android:name="com.example.a99hub.fragments.CGDetailsFragment"
+        android:name="com.example.a99hub.ui.ugame_detail.CGDetailsFragment"
         android:label="fragment_c_g_details"
         tools:layout="@layout/fragment_c_g_details" >
         <action

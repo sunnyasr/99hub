@@ -1,4 +1,4 @@
-package com.example.a99hub.fragments
+package com.example.a99hub.ui.ugame_detail
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -22,7 +22,11 @@ import com.example.a99hub.databinding.FragmentCGDetailsBinding
 import com.example.a99hub.model.CGBetsModel
 import com.example.a99hub.model.CGResultModel
 import com.example.a99hub.data.network.Api
+import com.example.a99hub.ui.utils.getLayoutParams
+import com.example.a99hub.ui.utils.getTblLayoutParams
+import com.example.a99hub.ui.utils.getTextView
 import com.kaopiz.kprogresshud.KProgressHUD
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -32,11 +36,11 @@ import org.json.JSONObject
 import java.util.stream.Collectors
 import kotlin.math.roundToInt
 
-class CGDetailsFragment : Fragment() {
+@AndroidEntryPoint
+class CGDetailsFragment : Fragment(R.layout.fragment_c_g_details) {
 
-    private var _binding: FragmentCGDetailsBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var kProgressHUD: KProgressHUD
+    private lateinit var binding: FragmentCGDetailsBinding
+
     private lateinit var compositeDisposable: CompositeDisposable
     private lateinit var matchBetsList: ArrayList<CGBetsModel>
     private lateinit var sessionBetsList: ArrayList<CGBetsModel>
@@ -49,17 +53,10 @@ class CGDetailsFragment : Fragment() {
     private lateinit var tvSessionHead: TextView
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentCGDetailsBinding.inflate(layoutInflater, container, false)
-        return binding.root
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentCGDetailsBinding.bind(view)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setProgress()
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -74,27 +71,13 @@ class CGDetailsFragment : Fragment() {
         tvMatchHead = binding.tvMatchBetsHead
         tvSessionHead = binding.tvSessionBetsHead
 
-        binding.tvTeamFname.text = StringBuilder().append( arguments?.getString("eventid").toString()).append("\n")
-            .append(arguments?.getString("long_name").toString())
-            .append("\n")
-            .append(arguments?.getString("start_time").toString())
+        binding.tvTeamFname.text =
+            StringBuilder().append(arguments?.getString("eventid").toString()).append("\n")
+                .append(arguments?.getString("long_name").toString())
+                .append("\n")
+                .append(arguments?.getString("start_time").toString())
 
         getBets(Token(requireContext()).getToken(), arguments?.getString("eventid").toString())
-    }
-
-
-    fun setProgress() {
-        kProgressHUD = KProgressHUD(context)
-            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-            .setLabel("Please wait")
-            .setCancellable(true)
-            .setAnimationSpeed(2)
-            .setDimAmount(0.5f)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
 
@@ -336,9 +319,9 @@ class CGDetailsFragment : Fragment() {
 
         context?.let {
             val tr = TableRow(it)
-            tr.layoutParams = Common(requireActivity()).getLayoutParams()
+            tr.layoutParams = getLayoutParams()
             tr.addView(
-                Common(requireContext()).getTextView(
+               getTextView(
                     0,
                     "Rate",
                     Color.WHITE,
@@ -348,7 +331,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+               getTextView(
                     0,
                     "Amount",
                     Color.WHITE,
@@ -358,7 +341,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+                getTextView(
                     0,
                     "Mode",
                     Color.WHITE,
@@ -367,7 +350,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+               getTextView(
                     0,
                     "Team",
                     Color.WHITE,
@@ -377,7 +360,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+               getTextView(
                     0,
                     arguments?.getString("team1", "").toString(),
                     Color.WHITE,
@@ -386,7 +369,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+               getTextView(
                     0,
                     arguments?.getString("team2", "").toString(),
                     Color.WHITE,
@@ -394,7 +377,7 @@ class CGDetailsFragment : Fragment() {
                     R.color.grey, 0, 12f, 0, Gravity.CENTER, -1
                 )
             )
-            tbBets.addView(tr, Common(requireContext()).getTblLayoutParams())
+            tbBets.addView(tr,getTblLayoutParams())
             tvMatchHead.text = "Match Bet(s) Won By : ${matchBetsList.get(0).result}"
             tvMatchHead.visibility = View.VISIBLE
         }
@@ -441,12 +424,12 @@ class CGDetailsFragment : Fragment() {
 
                 if (action.equals("0")) {
                     if (betTeam.equals(teamOne)) {
-                        team1 = (bet_amount * rate).roundToInt()*-1
+                        team1 = (bet_amount * rate).roundToInt() * -1
                         team2 = bet_amount * 1
                     }
                     if (betTeam.equals(teamTwo)) {
                         team1 = bet_amount * 1
-                        team2 = (bet_amount * rate).roundToInt()*-1
+                        team2 = (bet_amount * rate).roundToInt() * -1
                     }
                 }
 
@@ -455,7 +438,7 @@ class CGDetailsFragment : Fragment() {
 
                 tr.orientation = TableRow.VERTICAL
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                  getTextView(
                         i,
                         (matchBetsList.get(i - 1).rate.toDouble() / 100).toDouble().toString(),
                         Color.DKGRAY,
@@ -468,7 +451,7 @@ class CGDetailsFragment : Fragment() {
                     )
                 )
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                   getTextView(
                         i,
                         matchBetsList.get(i - 1).bet_amount,
                         Color.DKGRAY,
@@ -481,7 +464,7 @@ class CGDetailsFragment : Fragment() {
                     )
                 )
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                    getTextView(
                         i,
                         if (matchBetsList.get(i - 1).action.equals("0")) "K" else "L",
                         Color.DKGRAY,
@@ -494,7 +477,7 @@ class CGDetailsFragment : Fragment() {
                     )
                 )
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                    getTextView(
                         i,
                         StringBuilder().append(matchBetsList.get(i - 1).team)
                             .toString(),
@@ -509,7 +492,7 @@ class CGDetailsFragment : Fragment() {
                 )
 
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                   getTextView(
                         i,
                         team1.toInt().toString(),
                         Color.DKGRAY,
@@ -523,7 +506,7 @@ class CGDetailsFragment : Fragment() {
                 )
 
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                    getTextView(
                         i,
                         team2.toString(),
                         Color.DKGRAY,
@@ -535,7 +518,7 @@ class CGDetailsFragment : Fragment() {
                         Gravity.RIGHT, -1
                     )
                 )
-                tbBets.addView(tr, Common(requireContext()).getTblLayoutParams())
+                tbBets.addView(tr, getTblLayoutParams())
             }
             if (blc > 0) {
                 tvMatchLossWin.text =
@@ -569,7 +552,7 @@ class CGDetailsFragment : Fragment() {
 
                 tr.orientation = TableRow.VERTICAL
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                 getTextView(
                         i,
                         StringBuilder().append(sessionBetsList.get(i - 1).name)
                             .toString(),
@@ -583,7 +566,7 @@ class CGDetailsFragment : Fragment() {
                     )
                 )
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                  getTextView(
                         i,
                         (sessionBetsList.get(i - 1).size.toDouble() / 100).toDouble().toString(),
                         Color.DKGRAY,
@@ -596,7 +579,7 @@ class CGDetailsFragment : Fragment() {
                     )
                 )
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                  getTextView(
                         i,
                         StringBuilder().append(sessionBetsList.get(i - 1).bet_amount)
                             .toString(),
@@ -610,7 +593,7 @@ class CGDetailsFragment : Fragment() {
                     )
                 )
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                   getTextView(
                         i,
                         StringBuilder().append(sessionBetsList.get(i - 1).rate)
                             .toString(),
@@ -625,7 +608,7 @@ class CGDetailsFragment : Fragment() {
                 )
 
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                  getTextView(
                         i,
                         if (sessionBetsList.get(i - 1).action.equals("0")) "NO" else "YES",
                         Color.DKGRAY,
@@ -639,7 +622,7 @@ class CGDetailsFragment : Fragment() {
                 )
 
                 tr.addView(
-                    Common(requireContext()).getTextView(
+                 getTextView(
                         i,
                         StringBuilder().append(sessionBetsList.get(i - 1).result)
                             .toString(),
@@ -652,7 +635,7 @@ class CGDetailsFragment : Fragment() {
                         Gravity.RIGHT, -1
                     )
                 )
-                tbSession.addView(tr, Common(requireContext()).getTblLayoutParams())
+                tbSession.addView(tr, getTblLayoutParams())
             }
 
             if (blc > 0) {
@@ -673,9 +656,9 @@ class CGDetailsFragment : Fragment() {
 
         context?.let {
             val tr = TableRow(it)
-            tr.layoutParams = Common(requireActivity()).getLayoutParams()
+            tr.layoutParams = getLayoutParams()
             tr.addView(
-                Common(requireContext()).getTextView(
+            getTextView(
                     0,
                     "Session",
                     Color.WHITE,
@@ -685,7 +668,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+                getTextView(
                     0,
                     "Rate",
                     Color.WHITE,
@@ -695,7 +678,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+                getTextView(
                     0,
                     "Amount",
                     Color.WHITE,
@@ -704,7 +687,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+               getTextView(
                     0,
                     "Runs",
                     Color.WHITE,
@@ -714,7 +697,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+                getTextView(
                     0,
                     "Mode",
                     Color.WHITE,
@@ -723,7 +706,7 @@ class CGDetailsFragment : Fragment() {
                 )
             )
             tr.addView(
-                Common(requireContext()).getTextView(
+                getTextView(
                     0,
                     "Dec",
                     Color.WHITE,
@@ -731,7 +714,7 @@ class CGDetailsFragment : Fragment() {
                     R.color.grey, 0, 12f, 0, Gravity.CENTER, -1
                 )
             )
-            tbSession.addView(tr, Common(requireContext()).getTblLayoutParams())
+            tbSession.addView(tr, getTblLayoutParams())
             tvSessionHead.visibility = View.VISIBLE
         }
 
